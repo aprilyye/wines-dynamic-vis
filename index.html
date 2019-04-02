@@ -1,0 +1,141 @@
+<html>
+	<head>
+		<script src="https://d3js.org/d3.v5.min.js"></script> 
+		<script src="https://d3js.org/topojson.v2.min.js"></script>
+	</head>
+	<body>
+		<p id="p0">Graph 1 <br />
+			<svg id=g1 height="900" width="1000" style="border:3px solid black"></svg>
+			<script>
+				let svg = d3.select("svg#g1");
+
+				let grapes = [];
+				let topGrapes = [];
+				let regions = [];
+				let topProvinces = [];
+				let provinces = [];
+
+				//let counts = [];
+				d3.csv("./winemag-data-130k-v2.csv").then(function (data) {
+					data = data.filter(d => d['region_1'] != '');
+					console.log(data);
+					data.forEach((d, i) => {
+						// if(!grapes.includes(d['variety'])) {
+						// 	grapes.push(d['variety']);
+						// 	regions.push(d['region_1']);
+						// }
+						if(d['points']=='100') {
+							topGrapes.push(d['variety']);
+							topProvinces.push([d['province']]);
+						}
+					});
+					//console.log(topRegions);
+
+					let counts = new Array(topGrapes.length);
+					counts.fill(1);
+					//console.log(counts);
+					data.forEach((d, i) => {
+						if(topGrapes.includes(d['variety'])) {
+							counts[topGrapes.indexOf(d['variety'])] += 1;
+							if(!(topProvinces[topGrapes.indexOf(d['variety'])]).includes(d['province'])) {
+								topProvinces[topGrapes.indexOf(d['variety'])].push(d['province']);
+								if(!provinces.includes(d['province'])) {
+									provinces.push(d['province']);
+								}
+							}
+							
+						}
+					});
+					topGrapes.splice(7, 1);
+					topProvinces.splice(7, 1);
+					topGrapes.splice(8, 1);
+					topProvinces.splice(8, 1);
+
+
+					console.log("grapes: ");
+					console.log(topGrapes);
+					console.log("top provinces: ");
+					console.log(topProvinces);
+					console.log("provinces: ");
+					console.log(provinces);
+					console.log("counts: ");
+					console.log(counts);
+
+					// svg.append("circle")
+					// .attr("cx", 400)
+					// .attr("cy", 350)
+					// .attr("r", 300)
+					// .attr("stroke", "black")
+					// .attr("stroke-width", 2)
+					// .attr("fill", "none")
+					
+					let rotation;
+
+					//PROVINCES ON THE LEFT
+					for (var i = 0; i < provinces.length; i++) {
+        				rotation = 3*i;
+        				rotation += 90;
+        				labelRot = 3*i;
+        				labelRot -= 90;
+        				let provinceCircles = svg.append('circle')
+        					.attr('r', 4)
+				            .attr('cx', 450)
+				            .attr('cy', 350)
+            				.attr('id', provinces[i].split(" ")[0]) // CHECK THIS??
+				            .attr('fill', 'black')
+				            .attr('transform', function(d) {
+				                return 'translate(270, 100) rotate(' + rotation + ',' + 160 + ',' + 300 + ')';
+            				});
+
+            			var provinceLabels = svg.append('text')
+            				.attr('x', 200)
+				            .attr('y', 150)
+				            .attr('font-size', 12)
+				            .attr('text-anchor', 'end')
+				            .attr('transform', function(d) {
+				                return 'translate(-80, 200) rotate(' + labelRot + ',' + 510 + ',' +  200 + ')';
+				            }) 
+				            .text(provinces[i]);
+
+            		} 
+
+            		//GRAPES ON THE RIGHT
+            		let x = 0
+					let arcGenerator = d3.arc()
+					for (var i = Math.PI/5; i <= 4*Math.PI/5; i+=Math.PI/15) {
+						let pathData = arcGenerator({
+							startAngle: i,
+							endAngle: i + Math.PI / 20,
+							innerRadius: 280,
+							outerRadius: 300
+						});
+						svg.append("path")
+							.attr('d', pathData)
+							.attr('id', x)
+							//.attr('id', topGrapes[i].split(" ")[0]) // CHECK THIS??
+							//.attr('fill-opacity', new_opac)
+							.attr('fill', '#CD96CD')
+							.attr('stroke', "#CD96CD")
+							.attr('stroke-width', 3)
+							.attr('transform', 'translate(450, 400)');
+						x++;
+					}
+					for (var i = 0; i < 10; i++) {
+						rotation = i*10;
+        				rotation += -40;
+						var grapeLabels = svg.append("text")
+				            .attr("x", 500)
+				            .attr("y", 220)
+				            .text(topGrapes[i])
+				            .attr("text-anchor", "start")
+				            .attr("fill", "black")
+				            .attr("font-size", "12px")
+				            .attr("transform", function(d) {
+				                return "translate(260, 175) rotate(" + rotation + "," + 130 + "," + 215 + ")";
+				            })
+					}
+				});
+			</script>
+		</p>
+	</body>
+</html>
