@@ -3,6 +3,13 @@
 		<script src="https://d3js.org/d3.v5.min.js"></script>
 		<script src="https://d3js.org/topojson.v2.min.js"></script>
 		<style>
+			.gridlines line {
+	        stroke: #bbb;
+	      }
+
+      .gridlines .domain {
+        stroke: none;
+      }
 		</style>
 	</head>
 	<body>
@@ -22,7 +29,7 @@
 				d3.csv("./winemag-data-130k-v2.csv").then(function (data) {
 
 					data = data.filter(d => d['region_1'] != '' && d['price'] != "");
-					console.log("here", data);
+					console.log(data);
 					data.forEach((d, i) => {
 						// if(!grapes.includes(d['variety'])) {
 						// 	grapes.push(d['variety']);
@@ -138,6 +145,62 @@
 				                return "translate(260, 175) rotate(" + rotation + "," + 130 + "," + 215 + ")";
 				            })
 					}
+
+					// APRIL'S PART
+					let svg2 = d3.select("#g2");
+
+					// make margins for graph
+					let width = svg2.attr("width");
+					let height = svg2.attr("height");
+					let margin = { top: 10, right: 50, bottom: 50, left: 50};
+					let graphWidth = width - margin.left - margin.right;
+					let graphHeight = height - margin.top - margin.bottom;
+
+					// x axis
+					let maxPoint = d3.max(data, d => parseInt(d['points'], 10));
+					let minPoint = d3.min(data, d => parseInt(d['points'], 10));
+					console.log("max points =", minPoint, maxPoint);
+
+					var pointScale = d3.scaleLinear()
+								.domain([minPoint, maxPoint])
+								.range([0, graphWidth]);
+
+					// y axis
+					let maxPrice = d3.max(data, d => parseFloat(d['price']));
+					let minPrice = d3.min(data, d => parseFloat(d['price']));
+					console.log("max price =", minPrice, maxPrice);
+
+					var priceScale = d3.scaleLinear()
+								.domain([minPrice, maxPrice])
+								.range([graphHeight, 0]);
+
+					var leftAxis = d3.axisLeft(priceScale).tickFormat(d3.format("$.01s"));
+					svg2.append("g")
+            .attr("class", "y axis")
+            .attr("transform","translate("+ (margin.left-10) +","+ margin.top +")")
+            .call(leftAxis);
+
+					var bottomAxis = d3.axisBottom(pointScale);
+					svg2.append("g")
+            .attr("class", "x axis")
+            .attr("transform","translate("+ margin.left +","+ (margin.top +
+              graphHeight + 10) +")")
+            .call(bottomAxis);
+
+					let leftGridlines = d3.axisLeft(priceScale)
+          .tickSize(-graphWidth-10).tickFormat("");
+
+					svg2.append("g").attr("class", "y gridlines")
+          .attr("transform", "translate(" + (margin.left-10) + "," + margin.top + ")")
+          .call(leftGridlines);
+
+					let bottomGridlines = d3.axisBottom(pointScale)
+          .tickSize(-graphHeight-10).tickFormat("");
+
+	        svg2.append("g").attr("class", "x gridlines")
+	          .attr("transform", "translate(" + (margin.left) + "," + (margin.top + graphHeight + 10) + ")")
+	          .call(bottomGridlines);
+
 				});
 			</script>
 		</p>
