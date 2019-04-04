@@ -1,291 +1,328 @@
 <html>
-	<head>
-		<script src="https://d3js.org/d3.v5.min.js"></script>
-		<script src="https://d3js.org/topojson.v2.min.js"></script>
-		<style>
-			.gridlines line {
-	        stroke: #bbb;
-	      }
 
-      .gridlines .domain {
-        stroke: none;
-      }
-		</style>
-	</head>
-	<body>
-		<h1>Wine Reviews Trends </h1>
-		<p id="p0">Graph 1 <br />
-			<svg id=g1 height="900" width="1000" style="border:3px solid black"></svg>
-			<script>
-				let svg = d3.select("svg#g1");
+<head>
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="https://d3js.org/topojson.v2.min.js"></script>
+	<style>
+		.gridlines line {
+			stroke: #bbb;
+		}
 
-				let grapes = [];
-				let topGrapes = [];
-				let regions = [];
-				let topProvinces = [];
-				let provinces = [];
+		.gridlines .domain {
+			stroke: none;
+		}
+	</style>
+</head>
 
-				//let counts = [];
-				d3.csv("./winemag-data-130k-v2.csv").then(function (data) {
+<body>
+	<h1>Wine Reviews Trends </h1>
+	<p id="p0">Graph 1 <br />
+		<svg id=g1 height="900" width="1000" style="border:3px solid black"></svg>
+		<script>
+			let svg = d3.select("svg#g1");
 
-					data = data.filter(d => d['region_1'] != '' && d['price'] != '');
-					console.log(data);
-					data.forEach((d, i) => {
-						// if(!grapes.includes(d['variety'])) {
-						// 	grapes.push(d['variety']);
-						// 	regions.push(d['region_1']);
-						// }
-						if(d['points']=='100') {
-							topGrapes.push(d['variety']);
-							topProvinces.push([d['province']]);
-						}
-					});
-					//console.log(topRegions);
+			let grapes = [];
+			let topGrapes = [];
+			let regions = [];
+			let topProvinces = [];
+			let provinces = [];
 
-					let counts = new Array(topGrapes.length);
-					counts.fill(1);
-					//console.log(counts);
-					data.forEach((d, i) => {
-						if(topGrapes.includes(d['variety'])) {
-							counts[topGrapes.indexOf(d['variety'])] += 1;
-							if(!(topProvinces[topGrapes.indexOf(d['variety'])]).includes(d['province'])) {
-								topProvinces[topGrapes.indexOf(d['variety'])].push(d['province']);
-								if(!provinces.includes(d['province'])) {
-									provinces.push(d['province']);
-								}
-							}
+			//let counts = [];
+			d3.csv("./winemag-data-130k-v2.csv").then(function (data) {
 
-						}
-					});
-					topGrapes.splice(7, 1);
-					topProvinces.splice(7, 1);
-					topGrapes.splice(8, 1);
-					topProvinces.splice(8, 1);
-
-
-					console.log("grapes: ");
-					console.log(topGrapes);
-					console.log("top provinces: ");
-					console.log(topProvinces);
-					console.log("provinces: ");
-					console.log(provinces);
-					console.log("counts: ");
-					console.log(counts);
-
-					// svg.append("circle")
-					// .attr("cx", 400)
-					// .attr("cy", 350)
-					// .attr("r", 300)
-					// .attr("stroke", "black")
-					// .attr("stroke-width", 2)
-					// .attr("fill", "none")
-
-					let rotation;
-
-					//PROVINCES ON THE LEFT
-					for (var i = 0; i < provinces.length; i++) {
-        				rotation = 3*i;
-        				rotation += 90;
-        				labelRot = 3*i;
-        				labelRot -= 90;
-        				let provinceCircles = svg.append('circle')
-        					.attr('r', 4)
-				            .attr('cx', 450)
-				            .attr('cy', 350)
-            				.attr('id', provinces[i].split(" ")[0]) // CHECK THIS??
-				            .attr('fill', 'black')
-				            .attr('transform', function(d) {
-				                return 'translate(270, 100) rotate(' + rotation + ',' + 160 + ',' + 300 + ')';
-            				});
-
-            			var provinceLabels = svg.append('text')
-            				.attr('x', 200)
-				            .attr('y', 150)
-				            .attr('font-size', 12)
-				            .attr('text-anchor', 'end')
-				            .attr('transform', function(d) {
-				                return 'translate(-80, 200) rotate(' + labelRot + ',' + 510 + ',' +  200 + ')';
-				            })
-				            .text(provinces[i]);
-
-            		}
-
-            		//GRAPES ON THE RIGHT
-            		let x = 0
-					let arcGenerator = d3.arc()
-					for (var i = Math.PI/5; i <= 4*Math.PI/5; i+=Math.PI/15) {
-						let pathData = arcGenerator({
-							startAngle: i,
-							endAngle: i + Math.PI / 20,
-							innerRadius: 280,
-							outerRadius: 300
-						});
-						svg.append("path")
-							.attr('d', pathData)
-							.attr('id', x)
-							//.attr('id', topGrapes[i].split(" ")[0]) // CHECK THIS??
-							//.attr('fill-opacity', new_opac)
-							.attr('fill', '#CD96CD')
-							.attr('stroke', "#CD96CD")
-							.attr('stroke-width', 3)
-							.attr('transform', 'translate(450, 400)');
-						x++;
+				data = data.filter(d => d['region_1'] != '' && d['price'] != '');
+				console.log(data);
+				data.forEach((d, i) => {
+					// if(!grapes.includes(d['variety'])) {
+					// 	grapes.push(d['variety']);
+					// 	regions.push(d['region_1']);
+					// }
+					if (d['points'] == '100') {
+						topGrapes.push(d['variety']);
+						topProvinces.push([d['province']]);
 					}
-					for (var i = 0; i < 10; i++) {
-						rotation = i*10;
-        				rotation += -40;
-						var grapeLabels = svg.append("text")
-				            .attr("x", 500)
-				            .attr("y", 220)
-				            .text(topGrapes[i])
-				            .attr("text-anchor", "start")
-				            .attr("fill", "black")
-				            .attr("font-size", "12px")
-				            .attr("transform", function(d) {
-				                return "translate(260, 175) rotate(" + rotation + "," + 130 + "," + 215 + ")";
-				            })
-					}
-
-					// APRIL'S PART
-					let svg2 = d3.select("#g2");
-
-					// make margins for graph
-					let width = svg2.attr("width");
-					let height = svg2.attr("height");
-					let margin = { top: 10, right: 50, bottom: 50, left: 50};
-					let graphWidth = width - margin.left - margin.right;
-					let graphHeight = height - margin.top - margin.bottom;
-
-					// x axis
-					let maxPoint = d3.max(data, d => parseInt(d['points'], 10));
-					let minPoint = d3.min(data, d => parseInt(d['points'], 10));
-					console.log("max points =", minPoint, maxPoint);
-
-					var pointScale = d3.scaleLinear()
-								.domain([minPoint, maxPoint])
-								.range([0, graphWidth]);
-
-					// y axis
-					let maxPrice = d3.max(data, d => parseFloat(d['price']));
-					let minPrice = d3.min(data, d => parseFloat(d['price']));
-					console.log("max price =", minPrice, maxPrice);
-
-					var priceScale = d3.scaleLog()
-								.domain([minPrice+1, maxPrice+1])
-								.range([graphHeight, 0]);
-
-					var leftAxis = d3.axisLeft(priceScale).tickFormat(d3.format("$.01s"));
-					let yAxisLayer = svg2.append("g")
-            .attr("class", "y axis")
-            .attr("transform","translate("+ (margin.left-10) +","+ margin.top +")")
-            .call(leftAxis);
-
-					var bottomAxis = d3.axisBottom(pointScale);
-					let xAxisLayer = svg2.append("g")
-            .attr("class", "x axis")
-            .attr("transform","translate("+ margin.left +","+ (margin.top +
-              graphHeight + 10) +")")
-            .call(bottomAxis);
-
-					let leftGridlines = d3.axisLeft(priceScale)
-          .tickSize(-graphWidth-10).tickFormat("");
-
-					let yGridlineLayer = svg2.append("g").attr("class", "y gridlines")
-          .attr("transform", "translate(" + (margin.left-10) + "," + margin.top + ")")
-          .call(leftGridlines);
-
-					let bottomGridlines = d3.axisBottom(pointScale)
-          .tickSize(-graphHeight-10).tickFormat("");
-
-	        let xGridlineLayer = svg2.append("g").attr("class", "x gridlines")
-	          .attr("transform", "translate(" + (margin.left) + "," + (margin.top + graphHeight + 10) + ")")
-	          .call(bottomGridlines);
-
-					var g2 = svg2.append("g")
-					          .attr("transform", "translate(50, 10)");
-
-				  let top20prov = [];
-					let provCount = [];
-					provinces.forEach( (d, i) => {
-						provCount.push({
-							"province": provinces[i],
-							"count": 0
-						});
-					});
-
-					// increment count of provinces accordingly
-					data.forEach((d, i) => {
-						if(provinces.includes(d['province'])) {
-							var curProv = provCount.find( p => p.province === d['province'] );
-							curProv.count++;
-						}
-					});
-
-					// sort provCount by count of provinces in desc order
-					provCount.sort( function(a, b) {return b.count - a.count});
-					// take only top 20
-					top20prov = provCount.slice(0, 20);
-					// console.log("top 20 =", top20prov);
-
-					var grapeCount = 0;
-					var filteredData = data.filter( d =>
-						d['taster_twitter_handle'] != "" &&
-						d['taster_name'] != ""
-					);
-					console.log("filtered data =", filteredData);
-
-					let scatterWrapper = svg2.append("g");
-					let scatter = scatterWrapper.append("g") // We make a subgroup to contain the points we are adding, and use the margins to shrink it and move it to the right place, so that it doesn't overlap our axes
-	          .attr("id","chart-region")
-	          .attr("transform","translate("+margin.left+","+margin.top+")");
-
-					filteredData.forEach((d, i) => {
-						if (topGrapes.includes(d['variety']) &&
-							  top20prov.findIndex( p => p.province == d['province']) != -1) {
-							grapeCount++;
-							scatter.append("circle")
-									.attr("r", 12)
-									.attr("cx", pointScale(d['points']))
-									.attr("cy", priceScale(d['price']))
-									.style("fill", "purple")
-									.style("opacity", 0.3)
-						}
-					});
-					console.log("count =", grapeCount);
-
-					var scatterZoom = d3.zoom()
-			      .on("zoom", chartZoomed);
-
-					svg2.call(scatterZoom);
-
-					function chartZoomed() {
-			        let transform = d3.event.transform;
-			        scatter.attr("transform", d3.event.transform); // scatter was the group used to hold points
-			        leftAxis.scale(transform.rescaleY(priceScale))
-			        bottomAxis.scale(transform.rescaleX(pointScale))
-			        leftGridlines.scale(transform.rescaleY(priceScale))
-			        bottomGridlines.scale(transform.rescaleX(pointScale))
-			        // apply new scaled axes (no need for transition since zoom triggers so many events)
-			        yAxisLayer.call(leftAxis);
-			        xAxisLayer.call(bottomAxis);
-			        yGridlineLayer.call(leftGridlines);
-			        xGridlineLayer.call(bottomGridlines);
-			    }
-					svg2.append("defs").append("clipPath")
-	            .attr("id","chartclip")
-	            .append("rect").attr("x",margin.left)
-	                           .attr("y",margin.top)
-	                           .attr("width",graphWidth)
-	                           .attr("height",graphHeight);
-
-				  scatterWrapper.attr("clip-path","url(#chartclip)");
-
-
 				});
-			</script>
-		</p>
-		<p id="p1">Graph 2 <br />
-			<svg id=g2 height="900" width="1000" style="border:3px solid black"></svg>
-		</p>
-	</body>
+				//console.log(topRegions);
+
+				let counts = new Array(topGrapes.length);
+				counts.fill(1);
+				//console.log(counts);
+				data.forEach((d, i) => {
+					if (topGrapes.includes(d['variety'])) {
+						counts[topGrapes.indexOf(d['variety'])] += 1;
+						if (!(topProvinces[topGrapes.indexOf(d['variety'])]).includes(d['province'])) {
+							topProvinces[topGrapes.indexOf(d['variety'])].push(d['province']);
+							if (!provinces.includes(d['province'])) {
+								provinces.push(d['province']);
+							}
+						}
+
+					}
+				});
+				topGrapes.splice(7, 1);
+				topProvinces.splice(7, 1);
+				topGrapes.splice(8, 1);
+				topProvinces.splice(8, 1);
+
+
+				console.log("grapes: ");
+				console.log(topGrapes);
+				console.log("top provinces: ");
+				console.log(topProvinces);
+				console.log("provinces: ");
+				console.log(provinces);
+				console.log("counts: ");
+				console.log(counts);
+
+				// svg.append("circle")
+				// .attr("cx", 400)
+				// .attr("cy", 350)
+				// .attr("r", 300)
+				// .attr("stroke", "black")
+				// .attr("stroke-width", 2)
+				// .attr("fill", "none")
+
+				let rotation;
+
+				//PROVINCES ON THE LEFT
+				for (var i = 0; i < provinces.length; i++) {
+					rotation = 3 * i;
+					rotation += 90;
+					labelRot = 3 * i;
+					labelRot -= 90;
+					let provinceCircles = svg.append('circle')
+						.attr('r', 4)
+						.attr('cx', 450)
+						.attr('cy', 350)
+						.attr('id', provinces[i].split(" ")[0]) // CHECK THIS??
+						.attr('fill', 'black')
+						.attr('transform', function (d) {
+							return 'translate(270, 100) rotate(' + rotation + ',' + 160 + ',' + 300 + ')';
+						});
+
+					var provinceLabels = svg.append('text')
+						.attr('x', 200)
+						.attr('y', 150)
+						.attr('font-size', 12)
+						.attr('text-anchor', 'end')
+						.attr('transform', function (d) {
+							return 'translate(-80, 200) rotate(' + labelRot + ',' + 510 + ',' + 200 + ')';
+						})
+						.text(provinces[i]);
+
+				}
+
+				//GRAPES ON THE RIGHT
+				let x = 0
+				let arcGenerator = d3.arc()
+				for (var i = Math.PI / 5; i <= 4 * Math.PI / 5; i += Math.PI / 15) {
+					let pathData = arcGenerator({
+						startAngle: i,
+						endAngle: i + Math.PI / 20,
+						innerRadius: 280,
+						outerRadius: 300
+					});
+					svg.append("path")
+						.attr('d', pathData)
+						.attr('id', "arc" + x)
+						//.attr('id', topGrapes[i].split(" ")[0]) // CHECK THIS??
+						//.attr('fill-opacity', new_opac)
+						.attr('fill', '#CD96CD')
+						.attr('stroke', "#CD96CD")
+						.attr('stroke-width', 3)
+						.attr('transform', 'translate(450, 400)');
+					x++;
+				}
+				for (var i = 0; i < 10; i++) {
+					rotation = i * 10;
+					rotation += -40;
+					var grapeLabels = svg.append("text")
+						.attr("x", 500)
+						.attr("y", 220)
+						.text(topGrapes[i])
+						.attr("text-anchor", "start")
+						.attr("fill", "black")
+						.attr("font-size", "12px")
+						.attr("transform", function (d) {
+							return "translate(260, 175) rotate(" + rotation + "," + 130 + "," + 215 + ")";
+						})
+				}
+				//let test = d3.select("#Connecticut").node().getBoundingClientRect();
+				//let test = d3.select("arc4").node().getBoundingClientRect();
+				// svg.append("rect")
+				// 	.attr("x", test.x)
+				// 	.attr("y", test.y)
+				// 	.attr("width", test.width)
+				// 	.attr("height", test.height)
+				// 	.attr("stroke", "red")
+				// 	.attr("stroke-width", 1);
+
+				//console.log(test);
+				//console.log(test.node().getBoundingClientRect());
+				// LINES
+				topProvinces.forEach((d, i) => {
+					if (i < 10) {
+						//console.log(i);
+						d.forEach((d2, i2) => {
+							if (d2.split(" ")[0] != "Champagne") {
+								let cirCoordinates = d3.select("#" + d2.split(" ")[0]).node().getBoundingClientRect();
+								let arcCoordinates = d3.select("#arc" + i).node().getBoundingClientRect();
+								//console.log(d2.split(" ")[0]);
+								//console.log(cirCoordinates);
+								svg.append("line")
+									.attr("x1", cirCoordinates.left + cirCoordinates.width / 2)
+									.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2)
+									.attr("x2", arcCoordinates.left + arcCoordinates.width / 2)
+									.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2)
+									.attr("transform", "translate(-10, -88)")
+									.attr("stroke", "blue")
+									.attr("stroke-width", 1);
+							}
+						})
+					}
+				});
+
+				// APRIL'S PART
+				let svg2 = d3.select("#g2");
+
+				// make margins for graph
+				let width = svg2.attr("width");
+				let height = svg2.attr("height");
+				let margin = { top: 10, right: 50, bottom: 50, left: 50 };
+				let graphWidth = width - margin.left - margin.right;
+				let graphHeight = height - margin.top - margin.bottom;
+
+				// x axis
+				let maxPoint = d3.max(data, d => parseInt(d['points'], 10));
+				let minPoint = d3.min(data, d => parseInt(d['points'], 10));
+				console.log("max points =", minPoint, maxPoint);
+
+				var pointScale = d3.scaleLinear()
+					.domain([minPoint, maxPoint])
+					.range([0, graphWidth]);
+
+				// y axis
+				let maxPrice = d3.max(data, d => parseFloat(d['price']));
+				let minPrice = d3.min(data, d => parseFloat(d['price']));
+				console.log("max price =", minPrice, maxPrice);
+
+				var priceScale = d3.scaleLog()
+					.domain([minPrice + 1, maxPrice + 1])
+					.range([graphHeight, 0]);
+
+				var leftAxis = d3.axisLeft(priceScale).tickFormat(d3.format("$.01s"));
+				let yAxisLayer = svg2.append("g")
+					.attr("class", "y axis")
+					.attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
+					.call(leftAxis);
+
+				var bottomAxis = d3.axisBottom(pointScale);
+				let xAxisLayer = svg2.append("g")
+					.attr("class", "x axis")
+					.attr("transform", "translate(" + margin.left + "," + (margin.top +
+						graphHeight + 10) + ")")
+					.call(bottomAxis);
+
+				let leftGridlines = d3.axisLeft(priceScale)
+					.tickSize(-graphWidth - 10).tickFormat("");
+
+				let yGridlineLayer = svg2.append("g").attr("class", "y gridlines")
+					.attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
+					.call(leftGridlines);
+
+				let bottomGridlines = d3.axisBottom(pointScale)
+					.tickSize(-graphHeight - 10).tickFormat("");
+
+				let xGridlineLayer = svg2.append("g").attr("class", "x gridlines")
+					.attr("transform", "translate(" + (margin.left) + "," + (margin.top + graphHeight + 10) + ")")
+					.call(bottomGridlines);
+
+				var g2 = svg2.append("g")
+					.attr("transform", "translate(50, 10)");
+
+				let top20prov = [];
+				let provCount = [];
+				provinces.forEach((d, i) => {
+					provCount.push({
+						"province": provinces[i],
+						"count": 0
+					});
+				});
+
+				// increment count of provinces accordingly
+				data.forEach((d, i) => {
+					if (provinces.includes(d['province'])) {
+						var curProv = provCount.find(p => p.province === d['province']);
+						curProv.count++;
+					}
+				});
+
+				// sort provCount by count of provinces in desc order
+				provCount.sort(function (a, b) { return b.count - a.count });
+				// take only top 20
+				top20prov = provCount.slice(0, 20);
+				// console.log("top 20 =", top20prov);
+
+				var grapeCount = 0;
+				var filteredData = data.filter(d =>
+					d['taster_twitter_handle'] != "" &&
+					d['taster_name'] != ""
+				);
+				console.log("filtered data =", filteredData);
+
+				let scatterWrapper = svg2.append("g");
+				let scatter = scatterWrapper.append("g") // We make a subgroup to contain the points we are adding, and use the margins to shrink it and move it to the right place, so that it doesn't overlap our axes
+					.attr("id", "chart-region")
+					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+				filteredData.forEach((d, i) => {
+					if (topGrapes.includes(d['variety']) &&
+						top20prov.findIndex(p => p.province == d['province']) != -1) {
+						grapeCount++;
+						scatter.append("circle")
+							.attr("r", 12)
+							.attr("cx", pointScale(d['points']))
+							.attr("cy", priceScale(d['price']))
+							.style("fill", "purple")
+							.style("opacity", 0.3)
+					}
+				});
+				console.log("count =", grapeCount);
+
+				var scatterZoom = d3.zoom()
+					.on("zoom", chartZoomed);
+
+				svg2.call(scatterZoom);
+
+				function chartZoomed() {
+					let transform = d3.event.transform;
+					scatter.attr("transform", d3.event.transform); // scatter was the group used to hold points
+					leftAxis.scale(transform.rescaleY(priceScale))
+					bottomAxis.scale(transform.rescaleX(pointScale))
+					leftGridlines.scale(transform.rescaleY(priceScale))
+					bottomGridlines.scale(transform.rescaleX(pointScale))
+					// apply new scaled axes (no need for transition since zoom triggers so many events)
+					yAxisLayer.call(leftAxis);
+					xAxisLayer.call(bottomAxis);
+					yGridlineLayer.call(leftGridlines);
+					xGridlineLayer.call(bottomGridlines);
+				}
+				svg2.append("defs").append("clipPath")
+					.attr("id", "chartclip")
+					.append("rect").attr("x", margin.left)
+					.attr("y", margin.top)
+					.attr("width", graphWidth)
+					.attr("height", graphHeight);
+
+				scatterWrapper.attr("clip-path", "url(#chartclip)");
+
+
+			});
+		</script>
+	</p>
+	<p id="p1">Graph 2 <br />
+		<svg id=g2 height="900" width="1000" style="border:3px solid black"></svg>
+	</p>
+</body>
+
 </html>
