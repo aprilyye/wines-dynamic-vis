@@ -368,6 +368,9 @@
 
 				function scatterCircles(grape) {
 					var grapeCount = 0;
+					var tooltip = d3.select("body").append("div")
+						.attr("class", "tooltip")
+						.style("opacity", 0);
 
 					filteredData.forEach((d, i) => {
 						if (top50grapes.includes(d['variety']) &&
@@ -380,6 +383,93 @@
 										.attr("cy", priceScale(d['price']))
 										.style("fill", "#cd06d1")
 										.style("opacity", 0.5)
+										.on("mouseover", function() {
+											d3.select(this)
+				                .attr("r", 14)
+												.style("fill", "#fceafc")
+												.style("opacity", .8);
+
+											var gInfo = scatter.append("g")
+												.attr("class","someClass")
+									      .attr("transform", function() {
+									          return "translate(" + d.x + "," + d.y + ")";
+													});
+
+											gInfo.append("rect")
+												.attr("id", "r" + d.x + "-" + d.y + "-" + i)
+												.attr("x", pointScale(d['points'])+20)
+												.attr("y", priceScale(d['price'])-20)
+												.attr("rx", 6)
+												.attr("ry", 6)
+												.attr("width", 250)
+												.attr("height", 140)
+												.attr("fill", "#fceafc")
+												.style("opacity", 0.7)
+
+				              gInfo.append("text")
+				                .attr("id", "t" + d.x + "-" + d.y + "-" + i)
+				                .attr("dx", pointScale(d['points'])+30)
+				                .attr("dy", priceScale(d['price']))
+				                .attr("font-size", "16px")
+												.attr("font-weight", "bold")
+												.style("fill", "black")
+				                .text("review by: " + d['taster_name']);
+
+											gInfo.append("text")
+				                .attr("id", "t" + d.x + "-" + d.y + "-" + i)
+				                .attr("dx", pointScale(d['points'])+30)
+				                .attr("dy", priceScale(d['price'])+20)
+				                .attr("font-size", "14px")
+												// .attr("font-weight", "bold")
+												.style("fill", "black")
+				                .text("rating: " + d['points']);
+
+											gInfo.append("text")
+												.attr("id", "t" + d.x + "-" + d.y + "-" + i)
+												.attr("dx", pointScale(d['points'])+30)
+												.attr("dy", priceScale(d['price'])+60)
+												.attr("font-size", "14px")
+												// .attr("font-weight", "bold")
+												.style("fill", "black")
+												.text("price: $" + d['price']);
+
+											gInfo.append("text")
+				                .attr("id", "t" + d.x + "-" + d.y + "-" + i)
+				                .attr("dx", pointScale(d['points'])+30)
+				                .attr("dy", priceScale(d['price'])+40)
+				                .attr("font-size", "14px")
+												// .attr("font-weight", "bold")
+												.style("fill", "black")
+				                .text("variety: " + d['variety']);
+
+											gInfo.append("text")
+												.attr("id", "t" + d.x + "-" + d.y + "-" + i)
+												.attr("dx", pointScale(d['points'])+30)
+												.attr("dy", priceScale(d['price'])+80)
+												.attr("font-size", "14px")
+												// .attr("font-weight", "bold")
+												.style("fill", "black")
+												.text("province: " + d['province']);
+
+											gInfo.append("text")
+												.attr("id", "t" + d.x + "-" + d.y + "-" + i)
+												.attr("dx", pointScale(d['points'])+30)
+												.attr("dy", priceScale(d['price'])+100)
+												.attr("font-size", "14px")
+												// .attr("font-weight", "bold")
+												.style("fill", "black")
+												.text("region: " + d['region_1']);
+
+											})
+										.on("mouseout", function() {
+				              d3.select(this)
+				                .attr("r", 7)
+												.style("fill", "#cd06d1")
+												.style("opacity", .7);
+				              d3.selectAll("#t" + d.x + "-" + d.y + "-" + i).remove();
+											d3.select("#r" + d.x + "-" + d.y + "-" + i).remove();
+
+										});
 								}
 						}
 					});
@@ -418,22 +508,6 @@
 				scatterWrapper.attr("clip-path", "url(#chartclip)");
 
 				// make buttons to filter scatterplot
-
-        // for (var i = 0; i < top50grapes.length; i++) {
-				// 	let btn = d3.select("div#buttonClass").append("button")
-				// 			// .data(top50grapes)
-				// 			.enter()
-				// 			.append("input")
-				// 			.attr("type", "button")
-				// 			.attr("class", "button")
-				// 			.text(top50grapes[i])
-				// 			.on("click", function(d) {
-				// 				// console.log("cur =", d);
-				// 				svg2.selectAll("circle").remove();
-				// 				scatterCircles(d);
-				// 			});
-        // }
-
 				d3.select("div#btn").selectAll("input")
 					.data(top50grapes)
 					.enter()
@@ -442,7 +516,6 @@
 					.attr("class","button")
 					.attr("value", d => d )
 					.on("click", function(d) {
-						// console.log("cur =", d);
 						svg2.selectAll("circle").remove();
 						scatterCircles(d);
 					});
