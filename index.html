@@ -107,9 +107,37 @@
 					}
 				});
 
-				let uniqueGrapes = [...new Set(topGrapes)].sort();
-				uniqueGrapes.splice(7,1); // this grape has count = 0 when displaying in scatter
-				// console.log("unique grapes =", uniqueGrapes);
+				// APRIL GRAPE COUNTING FOR SCATTERPLOT
+				let grapesCount = [];
+				// increment count of grapes accordingly
+				data.forEach((d, i) => {
+					if (grapesCount.findIndex( p => p.grape === d['variety']) == -1) {
+						grapesCount.push({
+							"grape": d['variety'],
+							"count": 1
+						})
+					} else {
+						var curGrape = grapesCount.find(p => p.grape === d['variety']);
+						curGrape.count++;
+					}
+				});
+
+				grapesCount.sort(function (a, b) { return b.count - a.count });
+				// take only top 50
+				let top50grapeNested = grapesCount.slice(0, 51);
+				let top50grapes = [];
+				top50grapeNested.forEach( d => {
+					top50grapes.push(d.grape);
+				});
+				top50grapes.sort(); // sort alphabetical
+				top50grapes.splice(10,1); // grape at index 10 has 0 count in scatterplot
+
+				console.log("grapes count =", grapesCount);
+				console.log("top 50 grapes =", top50grapes);
+
+				// let uniqueGrapes = [...new Set(topGrapes)].sort();
+				// uniqueGrapes.splice(7,1); // this grape has count = 0 when displaying in scatter
+				// END OF APRIL GRAPE COUNTING
 
 				topGrapes.splice(7, 1);
 				topProvinces.splice(7, 1);
@@ -330,7 +358,7 @@
 					var grapeCount = 0;
 
 					filteredData.forEach((d, i) => {
-						if (topGrapes.includes(d['variety']) &&
+						if (top50grapes.includes(d['variety']) &&
 							top20prov.findIndex(p => p.province == d['province']) != -1) {
 								if (grape == "" || d['variety'] == grape) {
 									grapeCount++;
@@ -339,7 +367,7 @@
 										.attr("cx", pointScale(d['points']))
 										.attr("cy", priceScale(d['price']))
 										.style("fill", "#cd06d1")
-										.style("opacity", 0.3)
+										.style("opacity", 0.4)
 								}
 						}
 					});
@@ -381,17 +409,17 @@
 				let buttons = d3.select("body").append("div")
 					.attr("class", "btn");
 
-        for (var i = 0; i < uniqueGrapes.length; i++) {
+        for (var i = 0; i < top50grapes.length; i++) {
 					let btn = g2.append("button")
 							.attr("type", "button")
 							.attr("class", "btn")
 							.append("div")
 							.attr("class", "label")
-							.text(uniqueGrapes[i])
+							.text(top50grapes[i])
         }
 
 				d3.select("body").selectAll("input")
-					.data(uniqueGrapes)
+					.data(top50grapes)
 					.enter()
 					.append("input")
 					.attr("type","button")
