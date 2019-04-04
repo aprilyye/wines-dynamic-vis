@@ -170,8 +170,8 @@
 					let minPrice = d3.min(data, d => parseFloat(d['price']));
 					console.log("max price =", minPrice, maxPrice);
 
-					var priceScale = d3.scaleLinear()
-								.domain([minPrice, maxPrice])
+					var priceScale = d3.scaleLog()
+								.domain([minPrice+1, maxPrice+1])
 								.range([graphHeight, 0]);
 
 					var leftAxis = d3.axisLeft(priceScale).tickFormat(d3.format("$.01s"));
@@ -204,14 +204,43 @@
 					var g2 = svg2.append("g")
 					          .attr("transform", "translate(50, 10)");
 
+				  let top20prov = [];
+					let provCount = [];
+					provinces.forEach( (d, i) => {
+						provCount.push({
+							"province": provinces[i],
+							"count": 0
+						});
+					});
+
+					// increment count of provinces accordingly
 					data.forEach((d, i) => {
-						g2.append("circle")
-								.attr("r", 10)
-								.attr("cx", pointScale(d['points']))
-								.attr("cy", priceScale(d['price']))
-								.style("fill", "purple")
-								.style("opacity", 0.4)
-					})
+						if(provinces.includes(d['province'])) {
+							var curProv = provCount.find( p => p.province === d['province'] );
+							curProv.count++;
+						}
+					});
+
+					// sort provCount by count of provinces in desc order
+					provCount.sort( function(a, b) {return b.count - a.count});
+					// take only top 20
+					top20prov = provCount.slice(0, 7);
+					// console.log("top 20 =", top20prov);
+
+					var grapeCount = 0;
+					data.forEach((d, i) => {
+						if (topGrapes.includes(d['variety']) &&
+							  top20prov.findIndex( p => p.province == d['province']) != -1 ) {
+							grapeCount++;
+							g2.append("circle")
+									.attr("r", 10)
+									.attr("cx", pointScale(d['points']))
+									.attr("cy", priceScale(d['price']))
+									.style("fill", "purple")
+									.style("opacity", 0.4)
+						}
+					});
+					console.log("count =", grapeCount);
 
 				});
 			</script>
