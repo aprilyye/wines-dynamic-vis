@@ -29,6 +29,22 @@
 			text-align: center;
 		}
 
+		.button {
+			background-color: #f4f4f4;
+			margin: 10px;
+			border: none;
+			text-align: center;
+			display: inline-block;
+			font-size: 15px;
+			padding: 20px 15px;
+			border-radius: 8px;
+		}
+
+		.button:hover {
+			background-color: #cd06d1;
+			color: white;
+		}
+
 		.gridlines line {
 			stroke: #bbb;
 		}
@@ -85,6 +101,7 @@
 
 					}
 				});
+				console.log("topgrapes before =", topGrapes);
 				topGrapes.splice(7, 1);
 				topProvinces.splice(7, 1);
 				topGrapes.splice(8, 1);
@@ -286,34 +303,42 @@
 				// sort provCount by count of provinces in desc order
 				provCount.sort(function (a, b) { return b.count - a.count });
 				// take only top 20
-				top20prov = provCount.slice(20);
+				top20prov = provCount.slice(0, 20);
 				// console.log("top 20 =", top20prov);
 
-				var grapeCount = 0;
 				var filteredData = data.filter(d =>
 					d['taster_twitter_handle'] != "" &&
 					d['taster_name'] != ""
 				);
-				console.log("filtered data =", filteredData);
+				// console.log("filtered data =", filteredData);
 
 				let scatterWrapper = svg2.append("g");
 				let scatter = scatterWrapper.append("g") // We make a subgroup to contain the points we are adding, and use the margins to shrink it and move it to the right place, so that it doesn't overlap our axes
 					.attr("id", "chart-region")
 					.attr("transform", "translate(" + (margin.left+50) + "," + (margin.top+10) + ")");
 
-				filteredData.forEach((d, i) => {
-					if (topGrapes.includes(d['variety']) &&
-						top20prov.findIndex(p => p.province == d['province']) != -1) {
-						grapeCount++;
-						scatter.append("circle")
-							.attr("r", 12)
-							.attr("cx", pointScale(d['points']))
-							.attr("cy", priceScale(d['price']))
-							.style("fill", "#cd06d1")
-							.style("opacity", 0.3)
-					}
-				});
-				console.log("count =", grapeCount);
+				function scatterCircles(grape) {
+					var grapeCount = 0;
+
+					filteredData.forEach((d, i) => {
+						if (topGrapes.includes(d['variety']) &&
+							top20prov.findIndex(p => p.province == d['province']) != -1) {
+								if (grape == "" || d['variety'] == grape) {
+									grapeCount++;
+									scatter.append("circle")
+										.attr("r", 10)
+										.attr("cx", pointScale(d['points']))
+										.attr("cy", priceScale(d['price']))
+										.style("fill", "#cd06d1")
+										.style("opacity", 0.3)
+								}
+						}
+					});
+
+					console.log("count =", grapeCount);
+				}
+
+				scatterCircles("");
 
 				var scatterZoom = d3.zoom()
 					.on("zoom", chartZoomed);
@@ -322,17 +347,18 @@
 
 				function chartZoomed() {
 					let transform = d3.event.transform;
-					scatter.attr("transform", d3.event.transform); // scatter was the group used to hold points
+					scatter.attr("transform", d3.event.transform);
 					leftAxis.scale(transform.rescaleY(priceScale))
 					bottomAxis.scale(transform.rescaleX(pointScale))
 					leftGridlines.scale(transform.rescaleY(priceScale))
 					bottomGridlines.scale(transform.rescaleX(pointScale))
-					// apply new scaled axes (no need for transition since zoom triggers so many events)
+
 					yAxisLayer.call(leftAxis);
 					xAxisLayer.call(bottomAxis);
 					yGridlineLayer.call(leftGridlines);
 					xGridlineLayer.call(bottomGridlines);
 				}
+
 				svg2.append("defs").append("clipPath")
 					.attr("id", "chartclip")
 					.append("rect").attr("x", margin.left)
@@ -342,8 +368,42 @@
 
 				scatterWrapper.attr("clip-path", "url(#chartclip)");
 
+				// var uniqueGrapes = [];
+				// $.each(topGrapes, function(i, elm){
+				//     if($.inArray(elt, uniqueGrapes) === -1) uniqueGrapes.push(elt);
+				// });
+				console.log("top grapes =", topGrapes);
+				// make buttons to filter scatterplot
+        for (var i = 0; i < topGrapes.length; i++) {
+					g2.append("button")
+							.attr("type", "button")
+							.attr("class", "btn")
+							.append("div")
+							.attr("class", "label")
+							.text(topGrapes[i])
+        }
+				d3.select("body").selectAll("input")
+					.data(topGrapes)
+					.enter()
+					.append("input")
+					.attr("type","button")
+					.attr("class","button")
+					.attr("value", d => d )
+					.on("click", function(d) {
+						console.log("cur =", d);
+						svg2.selectAll("circle").remove();
+						scatterCircles(d);
+					});
+
+				// HOW TO CENTER BUTTONS??!!
+				// let buttons = d3.select("button");
+				// var gButton = buttons.append("g");
+				// gButton.attr("transform", "translate(100, 0)")
+
+
 
 			});
+
 		</script>
 	</p>
 	<p id="p1">Is there a correlation between a wine's price and its rating? <br />
