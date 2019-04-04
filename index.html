@@ -201,6 +201,18 @@
 	          .attr("transform", "translate(" + (margin.left) + "," + (margin.top + graphHeight + 10) + ")")
 	          .call(bottomGridlines);
 
+					var g2 = svg2.append("g")
+					          .attr("transform", "translate(50, 10)");
+
+					data.forEach((d, i) => {
+						g2.append("circle")
+								.attr("r", 10)
+								.attr("cx", pointScale(d['points']))
+								.attr("cy", priceScale(d['price']))
+								.style("fill", "purple")
+								.style("opacity", 0.4)
+					})
+
 				});
 			</script>
 		</p>
