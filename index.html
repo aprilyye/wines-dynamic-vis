@@ -4,6 +4,31 @@
 	<script src="https://d3js.org/d3.v5.min.js"></script>
 	<script src="https://d3js.org/topojson.v2.min.js"></script>
 	<style>
+		body {
+			color: #f4f4f4;
+			background-color: #0b0a0c;
+		}
+
+		h1 {
+			text-align: center;
+			margin-top: 40px;
+		}
+
+		#p1 {
+			text-align: center;
+			font-size: 40px;
+		}
+
+		#psub {
+			text-align: center;
+			font-size: 30px;
+		}
+
+		#g2 {
+			margin-top: 100px;
+			text-align: center;
+		}
+
 		.gridlines line {
 			stroke: #bbb;
 		}
@@ -283,7 +308,7 @@
 							.attr("r", 12)
 							.attr("cx", pointScale(d['points']))
 							.attr("cy", priceScale(d['price']))
-							.style("fill", "purple")
+							.style("fill", "#873fcc")
 							.style("opacity", 0.3)
 					}
 				});
@@ -320,9 +345,12 @@
 			});
 		</script>
 	</p>
-	<p id="p1">Graph 2 <br />
-		<svg id=g2 height="900" width="1000" style="border:3px solid black"></svg>
+	<p id="p1">Is there a correlation between a wine's price and its rating? <br />
+		<p id = "psub"> Hover over a wine data point to learn more about it <br/>
+			<svg id=g2 height="900" width="1000" style="border:3px solid black"></svg>
+		</p>
 	</p>
+
 </body>
 
 </html>
