@@ -286,7 +286,7 @@
 				// sort provCount by count of provinces in desc order
 				provCount.sort(function (a, b) { return b.count - a.count });
 				// take only top 20
-				top20prov = provCount.slice(0, 20);
+				top20prov = provCount.slice(20);
 				// console.log("top 20 =", top20prov);
 
 				var grapeCount = 0;
@@ -299,7 +299,7 @@
 				let scatterWrapper = svg2.append("g");
 				let scatter = scatterWrapper.append("g") // We make a subgroup to contain the points we are adding, and use the margins to shrink it and move it to the right place, so that it doesn't overlap our axes
 					.attr("id", "chart-region")
-					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+					.attr("transform", "translate(" + (margin.left+50) + "," + (margin.top+10) + ")");
 
 				filteredData.forEach((d, i) => {
 					if (topGrapes.includes(d['variety']) &&
@@ -309,7 +309,7 @@
 							.attr("r", 12)
 							.attr("cx", pointScale(d['points']))
 							.attr("cy", priceScale(d['price']))
-							.style("fill", "#873fcc")
+							.style("fill", "#cd06d1")
 							.style("opacity", 0.3)
 					}
 				});
