@@ -45,6 +45,11 @@
 			color: white;
 		}
 
+		.button:focus {
+			background-color: #cd06d1;
+			color: white;
+		}
+
 		.gridlines line {
 			stroke: #bbb;
 		}
@@ -101,7 +106,11 @@
 
 					}
 				});
-				console.log("topgrapes before =", topGrapes);
+
+				let uniqueGrapes = [...new Set(topGrapes)].sort();
+				uniqueGrapes.splice(7,1); // this grape has count = 0 when displaying in scatter
+				// console.log("unique grapes =", uniqueGrapes);
+
 				topGrapes.splice(7, 1);
 				topProvinces.splice(7, 1);
 				topGrapes.splice(8, 1);
@@ -368,39 +377,31 @@
 
 				scatterWrapper.attr("clip-path", "url(#chartclip)");
 
-				// var uniqueGrapes = [];
-				// $.each(topGrapes, function(i, elm){
-				//     if($.inArray(elt, uniqueGrapes) === -1) uniqueGrapes.push(elt);
-				// });
-				console.log("top grapes =", topGrapes);
 				// make buttons to filter scatterplot
-        for (var i = 0; i < topGrapes.length; i++) {
-					g2.append("button")
+				let buttons = d3.select("body").append("div")
+					.attr("class", "btn");
+
+        for (var i = 0; i < uniqueGrapes.length; i++) {
+					let btn = g2.append("button")
 							.attr("type", "button")
 							.attr("class", "btn")
 							.append("div")
 							.attr("class", "label")
-							.text(topGrapes[i])
+							.text(uniqueGrapes[i])
         }
+
 				d3.select("body").selectAll("input")
-					.data(topGrapes)
+					.data(uniqueGrapes)
 					.enter()
 					.append("input")
 					.attr("type","button")
 					.attr("class","button")
 					.attr("value", d => d )
 					.on("click", function(d) {
-						console.log("cur =", d);
+						// console.log("cur =", d);
 						svg2.selectAll("circle").remove();
 						scatterCircles(d);
 					});
-
-				// HOW TO CENTER BUTTONS??!!
-				// let buttons = d3.select("button");
-				// var gButton = buttons.append("g");
-				// gButton.attr("transform", "translate(100, 0)")
-
-
 
 			});
 
