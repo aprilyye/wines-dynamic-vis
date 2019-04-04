@@ -1,9 +1,12 @@
 <html>
 	<head>
-		<script src="https://d3js.org/d3.v5.min.js"></script> 
+		<script src="https://d3js.org/d3.v5.min.js"></script>
 		<script src="https://d3js.org/topojson.v2.min.js"></script>
+		<style>
+		</style>
 	</head>
 	<body>
+		<h1>Wine Reviews Trends </h1>
 		<p id="p0">Graph 1 <br />
 			<svg id=g1 height="900" width="1000" style="border:3px solid black"></svg>
 			<script>
@@ -17,8 +20,9 @@
 
 				//let counts = [];
 				d3.csv("./winemag-data-130k-v2.csv").then(function (data) {
-					data = data.filter(d => d['region_1'] != '');
-					console.log(data);
+
+					data = data.filter(d => d['region_1'] != '' && d['price'] != "");
+					console.log("here", data);
 					data.forEach((d, i) => {
 						// if(!grapes.includes(d['variety'])) {
 						// 	grapes.push(d['variety']);
@@ -43,7 +47,7 @@
 									provinces.push(d['province']);
 								}
 							}
-							
+
 						}
 					});
 					topGrapes.splice(7, 1);
@@ -68,7 +72,7 @@
 					// .attr("stroke", "black")
 					// .attr("stroke-width", 2)
 					// .attr("fill", "none")
-					
+
 					let rotation;
 
 					//PROVINCES ON THE LEFT
@@ -94,10 +98,10 @@
 				            .attr('text-anchor', 'end')
 				            .attr('transform', function(d) {
 				                return 'translate(-80, 200) rotate(' + labelRot + ',' + 510 + ',' +  200 + ')';
-				            }) 
+				            })
 				            .text(provinces[i]);
 
-            		} 
+            		}
 
             		//GRAPES ON THE RIGHT
             		let x = 0
@@ -136,6 +140,9 @@
 					}
 				});
 			</script>
+		</p>
+		<p id="p1">Graph 2 <br />
+			<svg id=g2 height="900" width="1000" style="border:3px solid black"></svg>
 		</p>
 	</body>
 </html>
