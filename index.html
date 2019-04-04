@@ -51,6 +51,7 @@
 			let regions = [];
 			let topProvinces = [];
 			let provinces = [];
+			let colors = ["#ECDB54", "#E94B3C", "#6F9FD8", "#944743", "#DBB1CD", "#EC9787", "#00A591", "#6B5B95", "#BC70A4", "#BFD641"];
 
 			//let counts = [];
 			d3.csv("./winemag-data-130k-v2.csv").then(function (data) {
@@ -152,8 +153,8 @@
 						.attr('id', "arc" + x)
 						//.attr('id', topGrapes[i].split(" ")[0]) // CHECK THIS??
 						//.attr('fill-opacity', new_opac)
-						.attr('fill', '#CD96CD')
-						.attr('stroke', "#CD96CD")
+						.attr('fill', colors[x])
+						.attr('stroke', colors[x])
 						.attr('stroke-width', 3)
 						.attr('transform', 'translate(450, 400)');
 					x++;
@@ -200,7 +201,7 @@
 									.attr("x2", arcCoordinates.left + arcCoordinates.width / 2)
 									.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2)
 									.attr("transform", "translate(-10, -88)")
-									.attr("stroke", "blue")
+									.attr("stroke", colors[i])
 									.attr("stroke-width", 1);
 							}
 						})
