@@ -5,8 +5,9 @@
 	<script src="https://d3js.org/topojson.v2.min.js"></script>
 	<style>
 		body {
-			color: #f4f4f4;
-			background-color: #0b0a0c;
+			color: #fcf9f9;
+			background-color: #22252d;
+			font-family: "Arial";
 		}
 
 		h1 {
@@ -16,12 +17,12 @@
 
 		#p1 {
 			text-align: center;
-			font-size: 40px;
+			font-size: 35px;
 		}
 
 		#psub {
 			text-align: center;
-			font-size: 30px;
+			font-size: 25px;
 		}
 
 		#g2 {
@@ -47,18 +48,19 @@
 			text-align: center;
 			display: table-cell;
 			font-size: 12px;
+			font-family: "Arial";
 			padding: 10px 5px;
 			border-radius: 8px;
 			width: 22%;
 		}
 
 		.button:hover {
-			background-color: #cd06d1;
+			background-color: #e25bf7;
 			color: white;
 		}
 
 		.button:focus {
-			background-color: #cd06d1;
+			background-color: #e25bf7;
 			color: white;
 		}
 
@@ -149,7 +151,7 @@
 
 				// let uniqueGrapes = [...new Set(topGrapes)].sort();
 				// uniqueGrapes.splice(7,1); // this grape has count = 0 when displaying in scatter
-				
+
 				// END OF APRIL GRAPE COUNTING
 
 				topGrapes.splice(7, 1);
@@ -376,7 +378,7 @@
 										.attr("r", 7)
 										.attr("cx", pointScale(d['points']))
 										.attr("cy", priceScale(d['price']))
-										.style("fill", "#cd06d1")
+										.style("fill", "#e25bf7")
 										.style("opacity", 0.5)
 										.on("mouseover", function() {
 											d3.select(this)
@@ -404,7 +406,7 @@
 				              gInfo.append("text")
 				                .attr("id", "t" + d.x + "-" + d.y + "-" + i)
 				                .attr("dx", pointScale(d['points'])+30)
-				                .attr("dy", priceScale(d['price']))
+				                .attr("dy", priceScale(d['price'])+5)
 				                .attr("font-size", "16px")
 												.attr("font-weight", "bold")
 												.style("fill", "black")
@@ -413,7 +415,7 @@
 											gInfo.append("text")
 				                .attr("id", "t" + d.x + "-" + d.y + "-" + i)
 				                .attr("dx", pointScale(d['points'])+30)
-				                .attr("dy", priceScale(d['price'])+20)
+				                .attr("dy", priceScale(d['price'])+25)
 				                .attr("font-size", "14px")
 												// .attr("font-weight", "bold")
 												.style("fill", "black")
@@ -422,7 +424,7 @@
 											gInfo.append("text")
 												.attr("id", "t" + d.x + "-" + d.y + "-" + i)
 												.attr("dx", pointScale(d['points'])+30)
-												.attr("dy", priceScale(d['price'])+60)
+												.attr("dy", priceScale(d['price'])+45)
 												.attr("font-size", "14px")
 												// .attr("font-weight", "bold")
 												.style("fill", "black")
@@ -431,7 +433,7 @@
 											gInfo.append("text")
 				                .attr("id", "t" + d.x + "-" + d.y + "-" + i)
 				                .attr("dx", pointScale(d['points'])+30)
-				                .attr("dy", priceScale(d['price'])+40)
+				                .attr("dy", priceScale(d['price'])+65)
 				                .attr("font-size", "14px")
 												// .attr("font-weight", "bold")
 												.style("fill", "black")
@@ -440,7 +442,7 @@
 											gInfo.append("text")
 												.attr("id", "t" + d.x + "-" + d.y + "-" + i)
 												.attr("dx", pointScale(d['points'])+30)
-												.attr("dy", priceScale(d['price'])+80)
+												.attr("dy", priceScale(d['price'])+85)
 												.attr("font-size", "14px")
 												// .attr("font-weight", "bold")
 												.style("fill", "black")
@@ -449,7 +451,7 @@
 											gInfo.append("text")
 												.attr("id", "t" + d.x + "-" + d.y + "-" + i)
 												.attr("dx", pointScale(d['points'])+30)
-												.attr("dy", priceScale(d['price'])+100)
+												.attr("dy", priceScale(d['price'])+105)
 												.attr("font-size", "14px")
 												// .attr("font-weight", "bold")
 												.style("fill", "black")
@@ -459,7 +461,7 @@
 										.on("mouseout", function() {
 				              d3.select(this)
 				                .attr("r", 7)
-												.style("fill", "#cd06d1")
+												.style("fill", "#e25bf7")
 												.style("opacity", .7);
 				              d3.selectAll("#t" + d.x + "-" + d.y + "-" + i).remove();
 											d3.select("#r" + d.x + "-" + d.y + "-" + i).remove();
