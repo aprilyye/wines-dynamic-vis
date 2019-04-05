@@ -226,7 +226,59 @@
 						.attr('fill', colors[x])
 						.attr('stroke', colors[x])
 						.attr('stroke-width', 3)
-						.attr('transform', 'translate(450, 400)');
+						.attr('transform', 'translate(450, 400)')
+						.on("mouseover", function () {
+							d3.select(this)
+								.transition().duration(200)
+								.attr('stroke-width', 20)
+
+							//console.log(this.id);
+
+							topProvinces.forEach((d, i) => {
+								if (i < 10) {
+									//console.log(i);
+									d.forEach((d2, i2) => {
+										if (d2.split(" ")[0] != "Champagne" && i != this.id.replace("arc", "")) {
+											d3.select("#grape" + i + "province" + i2).remove()
+										}
+
+									})
+								}
+							});
+						})
+						.on("mouseout", function () {
+							d3.select(this)
+								.transition().duration(200)
+								.attr('stroke-width', 3)
+
+							//console.log(this.id);
+
+							topProvinces.forEach((d, i) => {
+								if (i < 10) {
+									//console.log(i);
+									d.forEach((d2, i2) => {
+										if (d2.split(" ")[0] != "Champagne" && i != this.id.replace("arc", "")) {
+											let cirCoordinates = d3.select("#" + d2.split(" ")[0]).node().getBoundingClientRect();
+											let arcCoordinates = d3.select("#arc" + i).node().getBoundingClientRect();
+											//console.log(d2.split(" ")[0]);
+											//console.log(cirCoordinates);
+											svg.append("line")
+												.attr("id", "grape" + i + "province" + i2)
+												.attr("x1", cirCoordinates.left + cirCoordinates.width / 2)
+												.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2)
+												.attr("x2", arcCoordinates.left + arcCoordinates.width / 2)
+												.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2)
+												.attr("transform", "translate(-10, -120)")
+												.attr("stroke", colors[i])
+												.attr("stroke-width", 1);
+
+										}
+
+									})
+								}
+							});
+						})
+
 					x++;
 				}
 				for (var i = 0; i < 10; i++) {
@@ -258,7 +310,7 @@
 				// LINES
 				topProvinces.forEach((d, i) => {
 					if (i < 10) {
-						//console.log(i);
+						console.log(i);
 						d.forEach((d2, i2) => {
 							if (d2.split(" ")[0] != "Champagne") {
 								let cirCoordinates = d3.select("#" + d2.split(" ")[0]).node().getBoundingClientRect();
@@ -266,6 +318,7 @@
 								//console.log(d2.split(" ")[0]);
 								//console.log(cirCoordinates);
 								svg.append("line")
+									.attr("id", "grape" + i + "province" + i2)
 									.attr("x1", cirCoordinates.left + cirCoordinates.width / 2)
 									.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2)
 									.attr("x2", arcCoordinates.left + arcCoordinates.width / 2)
@@ -273,267 +326,269 @@
 									.attr("transform", "translate(-10, -120)")
 									.attr("stroke", colors[i])
 									.attr("stroke-width", 1);
+
 							}
+
 						})
 					}
 				});
 
-				// // APRIL'S PART
-				// let svg2 = d3.select("#g2");
+				// APRIL'S PART
+				let svg2 = d3.select("#g2");
 
-				// // make margins for graph
-				// let width = svg2.attr("width");
-				// let height = svg2.attr("height");
-				// let margin = { top: 10, right: 20, bottom: 60, left: 80 };
-				// let graphWidth = width - margin.left - margin.right;
-				// let graphHeight = height - margin.top - margin.bottom;
+				// make margins for graph
+				let width = svg2.attr("width");
+				let height = svg2.attr("height");
+				let margin = { top: 10, right: 20, bottom: 60, left: 80 };
+				let graphWidth = width - margin.left - margin.right;
+				let graphHeight = height - margin.top - margin.bottom;
 
-				// // x axis
-				// let maxPoint = d3.max(data, d => parseInt(d['points'], 10));
-				// let minPoint = d3.min(data, d => parseInt(d['points'], 10));
-				// console.log("max points =", minPoint, maxPoint);
+				// x axis
+				let maxPoint = d3.max(data, d => parseInt(d['points'], 10));
+				let minPoint = d3.min(data, d => parseInt(d['points'], 10));
+				console.log("max points =", minPoint, maxPoint);
 
-				// var pointScale = d3.scaleLinear()
-				// 	.domain([minPoint, maxPoint])
-				// 	.range([0, graphWidth]);
+				var pointScale = d3.scaleLinear()
+					.domain([minPoint, maxPoint])
+					.range([0, graphWidth]);
 
-				// // y axis
-				// let maxPrice = d3.max(data, d => parseFloat(d['price']));
-				// let minPrice = d3.min(data, d => parseFloat(d['price']));
-				// console.log("max price =", minPrice, maxPrice);
+				// y axis
+				let maxPrice = d3.max(data, d => parseFloat(d['price']));
+				let minPrice = d3.min(data, d => parseFloat(d['price']));
+				console.log("max price =", minPrice, maxPrice);
 
-				// var priceScale = d3.scaleLog()
-				// 	.domain([minPrice + 1, maxPrice + 1])
-				// 	.range([graphHeight, 0]);
+				var priceScale = d3.scaleLog()
+					.domain([minPrice + 1, maxPrice + 1])
+					.range([graphHeight, 0]);
 
-				// var leftAxis = d3.axisLeft(priceScale).tickFormat(d3.format("$.01s"));
-				// let yAxisLayer = svg2.append("g")
-				// 	.attr("class", "y axis")
-				// 	.attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
-				// 	.call(leftAxis);
+				var leftAxis = d3.axisLeft(priceScale).tickFormat(d3.format("$.01s"));
+				let yAxisLayer = svg2.append("g")
+					.attr("class", "y axis")
+					.attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
+					.call(leftAxis);
 
-				// var bottomAxis = d3.axisBottom(pointScale);
-				// let xAxisLayer = svg2.append("g")
-				// 	.attr("class", "x axis")
-				// 	.attr("transform", "translate(" + margin.left + "," + (margin.top +
-				// 		graphHeight + 10) + ")")
-				// 	.call(bottomAxis);
+				var bottomAxis = d3.axisBottom(pointScale);
+				let xAxisLayer = svg2.append("g")
+					.attr("class", "x axis")
+					.attr("transform", "translate(" + margin.left + "," + (margin.top +
+						graphHeight + 10) + ")")
+					.call(bottomAxis);
 
-				// let leftGridlines = d3.axisLeft(priceScale)
-				// 	.tickSize(-graphWidth - 10).tickFormat("");
+				let leftGridlines = d3.axisLeft(priceScale)
+					.tickSize(-graphWidth - 10).tickFormat("");
 
-				// let yGridlineLayer = svg2.append("g").attr("class", "y gridlines")
-				// 	.attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
-				// 	.call(leftGridlines);
+				let yGridlineLayer = svg2.append("g").attr("class", "y gridlines")
+					.attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")")
+					.call(leftGridlines);
 
-				// let bottomGridlines = d3.axisBottom(pointScale)
-				// 	.tickSize(-graphHeight - 10).tickFormat("");
+				let bottomGridlines = d3.axisBottom(pointScale)
+					.tickSize(-graphHeight - 10).tickFormat("");
 
-				// let xGridlineLayer = svg2.append("g").attr("class", "x gridlines")
-				// 	.attr("transform", "translate(" + (margin.left) + "," + (margin.top + graphHeight + 10) + ")")
-				// 	.call(bottomGridlines);
+				let xGridlineLayer = svg2.append("g").attr("class", "x gridlines")
+					.attr("transform", "translate(" + (margin.left) + "," + (margin.top + graphHeight + 10) + ")")
+					.call(bottomGridlines);
 
-				// let top20prov = [];
-				// let provCount = [];
-				// provinces.forEach((d, i) => {
-				// 	provCount.push({
-				// 		"province": provinces[i],
-				// 		"count": 0
-				// 	});
-				// });
+				let top20prov = [];
+				let provCount = [];
+				provinces.forEach((d, i) => {
+					provCount.push({
+						"province": provinces[i],
+						"count": 0
+					});
+				});
 
-				// // increment count of provinces accordingly
-				// data.forEach((d, i) => {
-				// 	if (provinces.includes(d['province'])) {
-				// 		var curProv = provCount.find(p => p.province === d['province']);
-				// 		curProv.count++;
-				// 	}
-				// });
+				// increment count of provinces accordingly
+				data.forEach((d, i) => {
+					if (provinces.includes(d['province'])) {
+						var curProv = provCount.find(p => p.province === d['province']);
+						curProv.count++;
+					}
+				});
 
-				// // sort provCount by count of provinces in desc order
-				// provCount.sort(function (a, b) { return b.count - a.count });
-				// // take only top 20
-				// top20prov = provCount.slice(0, 20);
+				// sort provCount by count of provinces in desc order
+				provCount.sort(function (a, b) { return b.count - a.count });
+				// take only top 20
+				top20prov = provCount.slice(0, 20);
 
-				// var filteredData = data.filter(d =>
-				// 	d['taster_twitter_handle'] != "" &&
-				// 	d['taster_name'] != ""
-				// );
+				var filteredData = data.filter(d =>
+					d['taster_twitter_handle'] != "" &&
+					d['taster_name'] != ""
+				);
 
-				// let scatterWrapper = svg2.append("g");
-				// let scatter = scatterWrapper.append("g")
-				// 	.attr("transform", "translate(" + (margin.left) + "," + (margin.top) + ")");
+				let scatterWrapper = svg2.append("g");
+				let scatter = scatterWrapper.append("g")
+					.attr("transform", "translate(" + (margin.left) + "," + (margin.top) + ")");
 
-				// function scatterCircles(grape) {
-				// 	var grapeCount = 0;
-				// 	var tooltip = d3.select("body").append("div")
-				// 		.attr("class", "tooltip")
-				// 		.style("opacity", 0);
+				function scatterCircles(grape) {
+					var grapeCount = 0;
+					var tooltip = d3.select("body").append("div")
+						.attr("class", "tooltip")
+						.style("opacity", 0);
 
-				// 	filteredData.forEach((d, i) => {
-				// 		if (top50grapes.includes(d['variety']) &&
-				// 			top20prov.findIndex(p => p.province == d['province']) != -1) {
-				// 			if (grape == "" || d['variety'] == grape) {
-				// 				grapeCount++;
-				// 				scatter.append("circle")
-				// 					.attr("r", 7)
-				// 					.attr("cx", pointScale(d['points']))
-				// 					.attr("cy", priceScale(d['price']))
-				// 					.style("fill", "#e25bf7")
-				// 					.style("opacity", 0.5)
-				// 					.on("mouseover", function () {
-				// 						d3.select(this)
-				// 							.attr("r", 14)
-				// 							.style("fill", "#fceafc")
-				// 							.style("opacity", .8);
+					filteredData.forEach((d, i) => {
+						if (top50grapes.includes(d['variety']) &&
+							top20prov.findIndex(p => p.province == d['province']) != -1) {
+							if (grape == "" || d['variety'] == grape) {
+								grapeCount++;
+								scatter.append("circle")
+									.attr("r", 7)
+									.attr("cx", pointScale(d['points']))
+									.attr("cy", priceScale(d['price']))
+									.style("fill", "#e25bf7")
+									.style("opacity", 0.5)
+									.on("mouseover", function () {
+										d3.select(this)
+											.attr("r", 14)
+											.style("fill", "#fceafc")
+											.style("opacity", .8);
 
-				// 						var gInfo = scatter.append("g")
-				// 							.attr("class", "someClass")
-				// 							.attr("transform", function () {
-				// 								return "translate(" + d.x + "," + d.y + ")";
-				// 							});
+										var gInfo = scatter.append("g")
+											.attr("class", "someClass")
+											.attr("transform", function () {
+												return "translate(" + d.x + "," + d.y + ")";
+											});
 
-				// 						gInfo.append("rect")
-				// 							.attr("id", "r" + d.x + "-" + d.y + "-" + i)
-				// 							.attr("x", pointScale(d['points']) + 20)
-				// 							.attr("y", priceScale(d['price']) - 20)
-				// 							.attr("rx", 6)
-				// 							.attr("ry", 6)
-				// 							.attr("width", 250)
-				// 							.attr("height", 140)
-				// 							.attr("fill", "#fceafc")
-				// 							.style("opacity", 0.7)
+										gInfo.append("rect")
+											.attr("id", "r" + d.x + "-" + d.y + "-" + i)
+											.attr("x", pointScale(d['points']) + 20)
+											.attr("y", priceScale(d['price']) - 20)
+											.attr("rx", 6)
+											.attr("ry", 6)
+											.attr("width", 250)
+											.attr("height", 140)
+											.attr("fill", "#fceafc")
+											.style("opacity", 0.7)
 
-				// 						gInfo.append("text")
-				// 							.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-				// 							.attr("dx", pointScale(d['points']) + 30)
-				// 							.attr("dy", priceScale(d['price']) + 5)
-				// 							.attr("font-size", "16px")
-				// 							.attr("font-weight", "bold")
-				// 							.style("fill", "black")
-				// 							.text("review by: " + d['taster_name']);
+										gInfo.append("text")
+											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
+											.attr("dx", pointScale(d['points']) + 30)
+											.attr("dy", priceScale(d['price']) + 5)
+											.attr("font-size", "16px")
+											.attr("font-weight", "bold")
+											.style("fill", "black")
+											.text("review by: " + d['taster_name']);
 
-				// 						gInfo.append("text")
-				// 							.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-				// 							.attr("dx", pointScale(d['points']) + 30)
-				// 							.attr("dy", priceScale(d['price']) + 25)
-				// 							.attr("font-size", "14px")
-				// 							// .attr("font-weight", "bold")
-				// 							.style("fill", "black")
-				// 							.text("rating: " + d['points']);
+										gInfo.append("text")
+											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
+											.attr("dx", pointScale(d['points']) + 30)
+											.attr("dy", priceScale(d['price']) + 25)
+											.attr("font-size", "14px")
+											// .attr("font-weight", "bold")
+											.style("fill", "black")
+											.text("rating: " + d['points']);
 
-				// 						gInfo.append("text")
-				// 							.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-				// 							.attr("dx", pointScale(d['points']) + 30)
-				// 							.attr("dy", priceScale(d['price']) + 45)
-				// 							.attr("font-size", "14px")
-				// 							// .attr("font-weight", "bold")
-				// 							.style("fill", "black")
-				// 							.text("price: $" + parseFloat(d['price']).toFixed(2));
+										gInfo.append("text")
+											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
+											.attr("dx", pointScale(d['points']) + 30)
+											.attr("dy", priceScale(d['price']) + 45)
+											.attr("font-size", "14px")
+											// .attr("font-weight", "bold")
+											.style("fill", "black")
+											.text("price: $" + parseFloat(d['price']).toFixed(2));
 
-				// 						gInfo.append("text")
-				// 							.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-				// 							.attr("dx", pointScale(d['points']) + 30)
-				// 							.attr("dy", priceScale(d['price']) + 65)
-				// 							.attr("font-size", "14px")
-				// 							// .attr("font-weight", "bold")
-				// 							.style("fill", "black")
-				// 							.text("variety: " + d['variety']);
+										gInfo.append("text")
+											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
+											.attr("dx", pointScale(d['points']) + 30)
+											.attr("dy", priceScale(d['price']) + 65)
+											.attr("font-size", "14px")
+											// .attr("font-weight", "bold")
+											.style("fill", "black")
+											.text("variety: " + d['variety']);
 
-				// 						gInfo.append("text")
-				// 							.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-				// 							.attr("dx", pointScale(d['points']) + 30)
-				// 							.attr("dy", priceScale(d['price']) + 85)
-				// 							.attr("font-size", "14px")
-				// 							// .attr("font-weight", "bold")
-				// 							.style("fill", "black")
-				// 							.text("province: " + d['province']);
+										gInfo.append("text")
+											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
+											.attr("dx", pointScale(d['points']) + 30)
+											.attr("dy", priceScale(d['price']) + 85)
+											.attr("font-size", "14px")
+											// .attr("font-weight", "bold")
+											.style("fill", "black")
+											.text("province: " + d['province']);
 
-				// 						gInfo.append("text")
-				// 							.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-				// 							.attr("dx", pointScale(d['points']) + 30)
-				// 							.attr("dy", priceScale(d['price']) + 105)
-				// 							.attr("font-size", "14px")
-				// 							// .attr("font-weight", "bold")
-				// 							.style("fill", "black")
-				// 							.text("region: " + d['region_1']);
+										gInfo.append("text")
+											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
+											.attr("dx", pointScale(d['points']) + 30)
+											.attr("dy", priceScale(d['price']) + 105)
+											.attr("font-size", "14px")
+											// .attr("font-weight", "bold")
+											.style("fill", "black")
+											.text("region: " + d['region_1']);
 
-				// 					})
-				// 					.on("mouseout", function () {
-				// 						d3.select(this)
-				// 							.attr("r", 7)
-				// 							.style("fill", "#e25bf7")
-				// 							.style("opacity", .7);
-				// 						d3.selectAll("#t" + d.x + "-" + d.y + "-" + i).remove();
-				// 						d3.select("#r" + d.x + "-" + d.y + "-" + i).remove();
+									})
+									.on("mouseout", function () {
+										d3.select(this)
+											.attr("r", 7)
+											.style("fill", "#e25bf7")
+											.style("opacity", .7);
+										d3.selectAll("#t" + d.x + "-" + d.y + "-" + i).remove();
+										d3.select("#r" + d.x + "-" + d.y + "-" + i).remove();
 
-				// 					});
-				// 			}
-				// 		}
-				// 	});
+									});
+							}
+						}
+					});
 
-				// 	console.log("count =", grapeCount);
-				// }
+					console.log("count =", grapeCount);
+				}
 
-				// scatterCircles("");
+				scatterCircles("");
 
-				// var scatterZoom = d3.zoom()
-				// 	.on("zoom", chartZoomed);
+				var scatterZoom = d3.zoom()
+					.on("zoom", chartZoomed);
 
-				// svg2.call(scatterZoom);
+				svg2.call(scatterZoom);
 
-				// function chartZoomed() {
-				// 	let transform = d3.event.transform;
-				// 	scatter.attr("transform", d3.event.transform);
-				// 	leftAxis.scale(transform.rescaleY(priceScale))
-				// 	bottomAxis.scale(transform.rescaleX(pointScale))
-				// 	leftGridlines.scale(transform.rescaleY(priceScale))
-				// 	bottomGridlines.scale(transform.rescaleX(pointScale))
+				function chartZoomed() {
+					let transform = d3.event.transform;
+					scatter.attr("transform", d3.event.transform);
+					leftAxis.scale(transform.rescaleY(priceScale))
+					bottomAxis.scale(transform.rescaleX(pointScale))
+					leftGridlines.scale(transform.rescaleY(priceScale))
+					bottomGridlines.scale(transform.rescaleX(pointScale))
 
-				// 	yAxisLayer.call(leftAxis);
-				// 	xAxisLayer.call(bottomAxis);
-				// 	yGridlineLayer.call(leftGridlines);
-				// 	xGridlineLayer.call(bottomGridlines);
-				// }
+					yAxisLayer.call(leftAxis);
+					xAxisLayer.call(bottomAxis);
+					yGridlineLayer.call(leftGridlines);
+					xGridlineLayer.call(bottomGridlines);
+				}
 
-				// svg2.append("defs").append("clipPath")
-				// 	.attr("id", "chartclip")
-				// 	.append("rect").attr("x", margin.left)
-				// 	.attr("y", margin.top)
-				// 	.attr("width", graphWidth)
-				// 	.attr("height", graphHeight);
+				svg2.append("defs").append("clipPath")
+					.attr("id", "chartclip")
+					.append("rect").attr("x", margin.left)
+					.attr("y", margin.top)
+					.attr("width", graphWidth)
+					.attr("height", graphHeight);
 
-				// scatterWrapper.attr("clip-path", "url(#chartclip)");
+				scatterWrapper.attr("clip-path", "url(#chartclip)");
 
-				// svg2.append("text")
-				// 	.attr("text-anchor", "middle")
-				// 	.attr("x", width / 2)
-				// 	.attr("y", height - 5)
-				// 	.attr("fill", "white")
-				// 	.attr("font-size", "16px")
-				// 	.text("wine rating")
+				svg2.append("text")
+					.attr("text-anchor", "middle")
+					.attr("x", width / 2)
+					.attr("y", height - 5)
+					.attr("fill", "white")
+					.attr("font-size", "16px")
+					.text("wine rating")
 
-				// svg2.append("text")
-				// 	.attr("text-anchor", "middle")
-				// 	.attr("x", -height / 2)
-				// 	.attr("y", 20)
-				// 	.attr("fill", "white")
-				// 	.attr("transform", "rotate(-90)")
-				// 	.attr("font-size", "16px")
-				// 	.text("wine price")
+				svg2.append("text")
+					.attr("text-anchor", "middle")
+					.attr("x", -height / 2)
+					.attr("y", 20)
+					.attr("fill", "white")
+					.attr("transform", "rotate(-90)")
+					.attr("font-size", "16px")
+					.text("wine price")
 
-				// // make buttons to filter scatterplot
-				// d3.select("div#btn").selectAll("input")
-				// 	.data(top50grapes)
-				// 	.enter()
-				// 	.append("input")
-				// 	.attr("type", "button")
-				// 	.attr("class", "button")
-				// 	.attr("value", d => d)
-				// 	.on("click", function (d) {
-				// 		svg2.selectAll("circle").remove();
-				// 		scatterCircles(d);
-				// 	});
+				// make buttons to filter scatterplot
+				d3.select("div#btn").selectAll("input")
+					.data(top50grapes)
+					.enter()
+					.append("input")
+					.attr("type", "button")
+					.attr("class", "button")
+					.attr("value", d => d)
+					.on("click", function (d) {
+						svg2.selectAll("circle").remove();
+						scatterCircles(d);
+					});
 
 			});
 
