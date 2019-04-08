@@ -265,9 +265,9 @@
 											svg.append("line")
 												.attr("id", "grape" + i + "province" + i2)
 												.attr("x1", cirCoordinates.left + cirCoordinates.width / 2)
-												.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2)
+												.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY)
 												.attr("x2", arcCoordinates.left + arcCoordinates.width / 2)
-												.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2)
+												.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY)
 												.attr("transform", "translate(-10, -120)")
 												.attr("stroke", colors[i])
 												.attr("stroke-width", 1);
@@ -320,9 +320,9 @@
 								svg.append("line")
 									.attr("id", "grape" + i + "province" + i2)
 									.attr("x1", cirCoordinates.left + cirCoordinates.width / 2)
-									.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2)
+									.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY)
 									.attr("x2", arcCoordinates.left + arcCoordinates.width / 2)
-									.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2)
+									.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY)
 									.attr("transform", "translate(-10, -120)")
 									.attr("stroke", colors[i])
 									.attr("stroke-width", 1);
