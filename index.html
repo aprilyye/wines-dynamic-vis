@@ -443,11 +443,6 @@
 
 										var gInfo = scatter.append("g")
 											.attr("class", "someClass");
-											// .attr("transform", function () {
-											// 	console.log("here", pointScale(d['points']), priceScale(d['price']));
-											// 	return "translate(" + d.x + "," + d.y + ")";
-											// 	// return "translate(" + pointScale(d['points']) + "," + priceScale(d['price']) + ")";
-											// });
 
 										gInfo.append("rect")
 											.attr("id", "r" + d.x + "-" + d.y + "-" + i)
@@ -532,34 +527,6 @@
 				}
 
 				scatterCircles("");
-
-				var scatterZoom = d3.zoom()
-					.on("zoom", chartZoomed);
-
-				svg2.call(scatterZoom);
-
-				function chartZoomed() {
-					let transform = d3.event.transform;
-					scatter.attr("transform", d3.event.transform);
-					leftAxis.scale(transform.rescaleY(priceScale))
-					bottomAxis.scale(transform.rescaleX(pointScale))
-					leftGridlines.scale(transform.rescaleY(priceScale))
-					bottomGridlines.scale(transform.rescaleX(pointScale))
-
-					yAxisLayer.call(leftAxis);
-					xAxisLayer.call(bottomAxis);
-					yGridlineLayer.call(leftGridlines);
-					xGridlineLayer.call(bottomGridlines);
-				}
-
-				svg2.append("defs").append("clipPath")
-					.attr("id", "chartclip")
-					.append("rect").attr("x", margin.left)
-					.attr("y", margin.top)
-					.attr("width", graphWidth)
-					.attr("height", graphHeight);
-
-				scatterWrapper.attr("clip-path", "url(#chartclip)");
 
 				svg2.append("text")
 					.attr("text-anchor", "middle")
