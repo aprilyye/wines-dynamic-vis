@@ -138,13 +138,12 @@
 
 				grapesCount.sort(function (a, b) { return b.count - a.count });
 				// take only top 50
-				let top50grapeNested = grapesCount.slice(0, 51);
+				let top50grapeNested = grapesCount.slice(0, 10);
 				let top50grapes = [];
 				top50grapeNested.forEach(d => {
 					top50grapes.push(d.grape);
 				});
 				top50grapes.sort(); // sort alphabetical
-				top50grapes.splice(10, 1); // grape at index 10 has 0 count in scatterplot
 
 				//console.log("grapes count =", grapesCount);
 				//console.log("top 50 grapes =", top50grapes);
@@ -443,10 +442,12 @@
 											.style("opacity", .8);
 
 										var gInfo = scatter.append("g")
-											.attr("class", "someClass")
-											.attr("transform", function () {
-												return "translate(" + d.x + "," + d.y + ")";
-											});
+											.attr("class", "someClass");
+											// .attr("transform", function () {
+											// 	console.log("here", pointScale(d['points']), priceScale(d['price']));
+											// 	return "translate(" + d.x + "," + d.y + ")";
+											// 	// return "translate(" + pointScale(d['points']) + "," + priceScale(d['price']) + ")";
+											// });
 
 										gInfo.append("rect")
 											.attr("id", "r" + d.x + "-" + d.y + "-" + i)
