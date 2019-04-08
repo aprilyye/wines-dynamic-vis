@@ -92,7 +92,7 @@
 			d3.csv("./winemag-data-130k-v2.csv").then(function (data) {
 
 				data = data.filter(d => d['region_1'] != '' && d['price'] != '');
-				console.log(data);
+				//console.log(data);
 				data.forEach((d, i) => {
 					// if(!grapes.includes(d['variety'])) {
 					// 	grapes.push(d['variety']);
@@ -146,8 +146,8 @@
 				top50grapes.sort(); // sort alphabetical
 				top50grapes.splice(10, 1); // grape at index 10 has 0 count in scatterplot
 
-				console.log("grapes count =", grapesCount);
-				console.log("top 50 grapes =", top50grapes);
+				//console.log("grapes count =", grapesCount);
+				//console.log("top 50 grapes =", top50grapes);
 
 				// let uniqueGrapes = [...new Set(topGrapes)].sort();
 				// uniqueGrapes.splice(7,1); // this grape has count = 0 when displaying in scatter
@@ -160,14 +160,14 @@
 				topProvinces.splice(8, 1);
 
 
-				console.log("grapes: ");
-				console.log(topGrapes);
-				console.log("top provinces: ");
-				console.log(topProvinces);
-				console.log("provinces: ");
-				console.log(provinces);
-				console.log("counts: ");
-				console.log(counts);
+				// console.log("grapes: ");
+				// console.log(topGrapes);
+				// console.log("top provinces: ");
+				// console.log(topProvinces);
+				// console.log("provinces: ");
+				// console.log(provinces);
+				// console.log("counts: ");
+				// console.log(counts);
 
 				// svg.append("circle")
 				// .attr("cx", 400)
@@ -229,7 +229,7 @@
 						.attr('transform', 'translate(450, 400)')
 						.on("mouseover", function () {
 							d3.select(this)
-								.transition().duration(200)
+								.transition().duration(400)
 								.attr('stroke-width', 20)
 
 							//console.log(this.id);
@@ -248,7 +248,7 @@
 						})
 						.on("mouseout", function () {
 							d3.select(this)
-								.transition().duration(200)
+								.transition().duration(400)
 								.attr('stroke-width', 3)
 
 							//console.log(this.id);
@@ -310,7 +310,7 @@
 				// LINES
 				topProvinces.forEach((d, i) => {
 					if (i < 10) {
-						console.log(i);
+						// console.log(i);
 						d.forEach((d2, i2) => {
 							if (d2.split(" ")[0] != "Champagne") {
 								let cirCoordinates = d3.select("#" + d2.split(" ")[0]).node().getBoundingClientRect();
@@ -346,7 +346,7 @@
 				// x axis
 				let maxPoint = d3.max(data, d => parseInt(d['points'], 10));
 				let minPoint = d3.min(data, d => parseInt(d['points'], 10));
-				console.log("max points =", minPoint, maxPoint);
+				// console.log("max points =", minPoint, maxPoint);
 
 				var pointScale = d3.scaleLinear()
 					.domain([minPoint, maxPoint])
@@ -355,7 +355,7 @@
 				// y axis
 				let maxPrice = d3.max(data, d => parseFloat(d['price']));
 				let minPrice = d3.min(data, d => parseFloat(d['price']));
-				console.log("max price =", minPrice, maxPrice);
+				// console.log("max price =", minPrice, maxPrice);
 
 				var priceScale = d3.scaleLog()
 					.domain([minPrice + 1, maxPrice + 1])
@@ -527,7 +527,7 @@
 						}
 					});
 
-					console.log("count =", grapeCount);
+					// console.log("count =", grapeCount);
 				}
 
 				scatterCircles("");
