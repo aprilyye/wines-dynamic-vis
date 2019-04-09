@@ -57,56 +57,13 @@
 			width: 22%;
 		}
 
-		/* .button[value="Bordeaux-style Red Blend"]:hover {
-			background-color: "#d35252";
-			color: white;
-		}
-
-		.button[value="Cabernet Sauvignon"]:hover {
-			background-color: "#f9d6d6";
-			color: white;
-		}
-
-		.button[value="Chardonnay"]:hover {
-			background-color: "#fcd525";
-			color: white;
-		}
-
-		.button[value="Merlot"]:hover {
-			background-color: ""#d31785"";
-			color: white;
-		}
-		.button4 :hover {
-			background-color: "#ea6eb7";
-			color: white;
-		}
-		.button[value="Red Blend"]:hover {
-			background-color: "#e20e06";
-			color: white;
-		}
-		.button[value="Rosé"]:hover {
-			background-color: "#f28b87";
-			color: white;
-		}
-		.button[value="Sauvignon Blanc"]:hover {
-			background-color: "#e8e5e5";
-			color: white;
-		}
-		.button[value="Syrah"]:hover {
-			background-color: "#bc432b";
-			color: white;
-		}
-		.button[value="Zinfandel"]:hover {
-			background-color: "#f9a898";
-			color: white;
-		} */
 		.button:hover {
-			background-color: #e25bf7;
+			background-color: #f27b99;
 			color: white;
 		}
 
 		.button:focus {
-			background-color: #e25bf7;
+			background-color: #f27b99;
 			color: white;
 		}
 
@@ -132,7 +89,7 @@
 			let regions = [];
 			let topProvinces = [];
 			let provinces = [];
-			let colors = ["#d35252", "#f9d6d6", "#fcd525", "#d31785", "#ea6eb7", "#e20e06", "#f28b87", "#e8e5e5", "#bc432b", "#f9a898"];
+			let colors = ["#d35252", "#f9d6d6", "#fcd525", "#d31785", "#ea6eb7", "#e20e06", "#f28b87", "#f6f9cf", "#bc432b", "#f9a898"];
 
 			//let counts = [];
 			d3.csv("./winemag-data-130k-v2.csv").then(function (data) {
@@ -184,12 +141,13 @@
 
 				grapesCount.sort(function (a, b) { return b.count - a.count });
 				// take only top 50
-				let top10grapeNested = grapesCount.slice(0, 10);
+				let top10grapeNested = grapesCount.slice(0, 11);
 				let top10grapes = [];
 				top10grapeNested.forEach(d => {
 					top10grapes.push(d.grape);
 				});
 				top10grapes.sort(); // sort alphabetical
+				top10grapes.splice(10, 1);
 
 				// add colors
 				grapeColors = [];
@@ -457,7 +415,7 @@
 				// sort provCount by count of provinces in desc order
 				provCount.sort(function (a, b) { return b.count - a.count });
 				// take only top 20
-				top20prov = provCount.slice(0, 20);
+				top20prov = provCount.slice(7, 20);
 
 				var filteredData = data.filter(d =>
 					d['taster_twitter_handle'] != "" &&
@@ -648,7 +606,7 @@
 
 
 	  var wineData;
-		d3.csv("./winemag-data_first150k").then(function (data) {
+		d3.csv("./winemag-data_first150k.csv").then(function (data) {
 	    wineData = data;
 	    function getCountryCodes(wineVariety){
 	      for(var i = 0; i < data.length; i++){
