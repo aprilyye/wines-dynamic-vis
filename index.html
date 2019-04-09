@@ -86,7 +86,7 @@
 			let regions = [];
 			let topProvinces = [];
 			let provinces = [];
-			let colors = ["#ECDB54", "#E94B3C", "#6F9FD8", "#944743", "#DBB1CD", "#EC9787", "#00A591", "#6B5B95", "#BC70A4", "#BFD641"];
+			let colors = ["#d35252", "#f9d6d6", "#fcd525", "#d31785", "#ea6eb7", "#e20e06", "#f28b87", "#e8e5e5", "#bc432b", "#f9a898"];
 
 			//let counts = [];
 			d3.csv("./winemag-data-130k-v2.csv").then(function (data) {
@@ -138,18 +138,22 @@
 
 				grapesCount.sort(function (a, b) { return b.count - a.count });
 				// take only top 50
-				let top50grapeNested = grapesCount.slice(0, 10);
-				let top50grapes = [];
-				top50grapeNested.forEach(d => {
-					top50grapes.push(d.grape);
+				let top10grapeNested = grapesCount.slice(0, 10);
+				let top10grapes = [];
+				top10grapeNested.forEach(d => {
+					top10grapes.push(d.grape);
 				});
-				top50grapes.sort(); // sort alphabetical
+				top10grapes.sort(); // sort alphabetical
 
-				//console.log("grapes count =", grapesCount);
-				//console.log("top 50 grapes =", top50grapes);
-
-				// let uniqueGrapes = [...new Set(topGrapes)].sort();
-				// uniqueGrapes.splice(7,1); // this grape has count = 0 when displaying in scatter
+				// add colors
+				grapeColors = [];
+				top10grapes.forEach((d,i) => {
+					grapeColors.push({
+						"grape": d,
+						"color": colors[i]
+					})
+				});
+				console.log("grape colors =", grapeColors);
 
 				// END OF APRIL GRAPE COUNTING
 
@@ -425,7 +429,7 @@
 						.style("opacity", 0);
 
 					filteredData.forEach((d, i) => {
-						if (top50grapes.includes(d['variety']) &&
+						if (top10grapes.includes(d['variety']) &&
 							top20prov.findIndex(p => p.province == d['province']) != -1) {
 							if (grape == "" || d['variety'] == grape) {
 								grapeCount++;
@@ -446,7 +450,7 @@
 
 										gInfo.append("rect")
 											.attr("id", "r" + d.x + "-" + d.y + "-" + i)
-											.attr("x", pointScale(d['points']) + 20)
+											.attr("x", d['points'] > 90 ? pointScale(d['points'])-270 : pointScale(d['points']) + 20)
 											.attr("y", priceScale(d['price']) - 20)
 											.attr("rx", 6)
 											.attr("ry", 6)
@@ -457,7 +461,7 @@
 
 										gInfo.append("text")
 											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-											.attr("dx", pointScale(d['points']) + 30)
+											.attr("dx", d['points'] > 90 ? pointScale(d['points'])-260 : pointScale(d['points']) + 30)
 											.attr("dy", priceScale(d['price']) + 5)
 											.attr("font-size", "16px")
 											.attr("font-weight", "bold")
@@ -466,7 +470,7 @@
 
 										gInfo.append("text")
 											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-											.attr("dx", pointScale(d['points']) + 30)
+											.attr("dx", d['points'] > 90 ? pointScale(d['points'])-260 : pointScale(d['points']) + 30)
 											.attr("dy", priceScale(d['price']) + 25)
 											.attr("font-size", "14px")
 											// .attr("font-weight", "bold")
@@ -475,7 +479,7 @@
 
 										gInfo.append("text")
 											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-											.attr("dx", pointScale(d['points']) + 30)
+											.attr("dx", d['points'] > 90 ? pointScale(d['points'])-260 : pointScale(d['points']) + 30)
 											.attr("dy", priceScale(d['price']) + 45)
 											.attr("font-size", "14px")
 											// .attr("font-weight", "bold")
@@ -484,7 +488,7 @@
 
 										gInfo.append("text")
 											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-											.attr("dx", pointScale(d['points']) + 30)
+											.attr("dx", d['points'] > 90 ? pointScale(d['points'])-260 : pointScale(d['points']) + 30)
 											.attr("dy", priceScale(d['price']) + 65)
 											.attr("font-size", "14px")
 											// .attr("font-weight", "bold")
@@ -493,7 +497,7 @@
 
 										gInfo.append("text")
 											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-											.attr("dx", pointScale(d['points']) + 30)
+											.attr("dx", d['points'] > 90 ? pointScale(d['points'])-260 : pointScale(d['points']) + 30)
 											.attr("dy", priceScale(d['price']) + 85)
 											.attr("font-size", "14px")
 											// .attr("font-weight", "bold")
@@ -502,7 +506,7 @@
 
 										gInfo.append("text")
 											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-											.attr("dx", pointScale(d['points']) + 30)
+											.attr("dx", d['points'] > 90 ? pointScale(d['points'])-260 : pointScale(d['points']) + 30)
 											.attr("dy", priceScale(d['price']) + 105)
 											.attr("font-size", "14px")
 											// .attr("font-weight", "bold")
@@ -547,7 +551,7 @@
 
 				// make buttons to filter scatterplot
 				d3.select("div#btn").selectAll("input")
-					.data(top50grapes)
+					.data(top10grapes)
 					.enter()
 					.append("input")
 					.attr("type", "button")
