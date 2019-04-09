@@ -38,23 +38,23 @@
 
 		#btn {
 			display: inline-block;
-			margin-top: 50px;
+			margin-top: 150px;
 			float: right;
 			text-align: left;
-			width: 50%
+			width: 40%
 		}
 
 		.button {
 			background-color: #f4f4f4;
-			margin: 5px;
+			margin: 10px;
 			border: none;
 			text-align: center;
 			display: table-cell;
-			font-size: 12px;
+			font-size: 14px;
 			font-family: "Arial";
-			padding: 10px 5px;
+			padding: 20px 5px;
 			border-radius: 8px;
-			width: 22%;
+			width: 230px;
 		}
 
 		.button:hover {
@@ -448,7 +448,7 @@
 									.on("mouseover", function () {
 										d3.select(this)
 											.attr("r", 14)
-											.style("fill", "#fceafc")
+											.style("fill", "#f4f4f4")
 											.style("opacity", .8);
 
 										var gInfo = scatter.append("g")
@@ -462,7 +462,7 @@
 											.attr("ry", 6)
 											.attr("width", 250)
 											.attr("height", 140)
-											.attr("fill", "#fceafc")
+											.attr("fill", "#f4f4f4")
 											.style("opacity", 0.7)
 
 										gInfo.append("text")
