@@ -3,6 +3,9 @@
 <head>
 	<script src="https://d3js.org/d3.v5.min.js"></script>
 	<script src="https://d3js.org/topojson.v2.min.js"></script>
+
+  <script src="https://d3js.org/topojson.v1.min.js"></script>
+
 	<style>
 		body {
 			color: #fcf9f9;
@@ -153,7 +156,7 @@
 						"color": colors[i]
 					})
 				});
-				console.log("grape colors =", grapeColors);
+				//console.log("grape colors =", grapeColors);
 
 				// END OF APRIL GRAPE COUNTING
 
@@ -566,6 +569,7 @@
 
 		</script>
 	</p>
+
 	<p id="p1">Is there a correlation between a wine's price and its rating? <br />
 		<p id="psub"> Hover over a wine data point to learn more about it <br />
 			<svg id=g2 height="600" width="700"></svg>
@@ -574,8 +578,78 @@
 		</div>
 	</p>
 
-	<p>
-	</p>
+	<hr>
+
+	<svg height="200" width="1000"></svg>
+
+	<div class="graphheader">
+	<h1 id = "p1">Which countries produce the wine you like?</h1>
+	<h2 id = "psub">Click through the slider to find out.</h2>
+	</div>
+
+	<div id="map"></div>
+	<div id="slider5"></div>
+
+	<script>
+
+	  var width2 = 960, height2 = 500;
+	  var projection = d3.geoAlbers();
+	  var path = d3.geoPath().projection(projection);
+	  var svg2 = d3.select("#map").append("svg")
+	    .attr("width", width2)
+	    .attr("height", height2);
+	  var g = svg2.append("g");
+
+
+	  var wineData;
+		d3.csv("./winemag-data_first150k").then(function (data) {
+	    wineData = data;
+	    function getCountryCodes(wineVariety){
+	      for(var i = 0; i < data.length; i++){
+	        var entry = data[i];
+	        if(entry["variety"] == wineVariety){
+	          return (entry["country codes"]);
+	        }
+	      }
+	      return [];
+	    };
+
+	  //	console.log(getCountryCodes("Pinot Noir"))
+
+			var worldData;
+	    var domainList = ["Pinot Noir", "Red Blend", "Chardonnay", "Merlot", "Cabernet Sauvignon"];
+	    d3.json("./world-50m.json", function(error, world){
+	    worldData = world;
+	    var initialVariety = "Pinot Noir";
+	    var initCountryList = getCountryCodes(initialVariety);
+
+	    g.selectAll("path")
+	    .data(topojson.feature(world, world.objects.countries).features)
+	    .enter().append("path").attr("d", path)
+	    .style("fill", function(country){
+	      if(initCountryList.indexOf(country.id) >= 0){
+	        return "#ff6378";
+	      } else {
+	        return "#2a3642";
+	      }
+	     });
+
+	     d3.select('#slider5').call(d3.slider().scale(d3.scale.ordinal().domain(domainList).rangePoints([0,1], 0.5)).axis(d3.svg.axis()).snap(true).value("Pinot Noir").on("slide", function(evt, value){
+	       var v = domainList();
+	       var countryList = getCountryCodes(v);
+	       g.selectAll("path")
+	       .style("fill", function(country){
+	        if(countryList.indexOf(country.id) >= 0){
+	        return "#ff6378";
+	      } else {
+	        return "#2a3642";
+	      }
+	       });
+	     }));
+	   });
+	 });
+	</script>
+
 
 </body>
 
