@@ -38,14 +38,25 @@
 
 		#btn {
 			display: inline-block;
-			margin-top: 150px;
+			margin-top: 50px;
 			float: right;
 			text-align: left;
 			width: 40%
 		}
 
+		/* #buttonLabel {
+			margin-top: 50px;
+			display: inline-block;
+			margin-right: 270px;
+			color: #f27b99;
+			text-align: center;
+			font-size: 25px;
+			float: right;
+		} */
+
 		.button {
 			background-color: #f4f4f4;
+			font-weight: bold;
 			margin: 10px;
 			border: none;
 			text-align: center;
@@ -58,12 +69,14 @@
 		}
 
 		.button:hover {
-			background-color: #f27b99;
+			background-color: #767d92;
+			font-weight: bold;
 			color: white;
 		}
 
 		.button:focus {
-			background-color: #f27b99;
+			background-color: #767d92;
+			font-weight: bold;
 			color: white;
 		}
 
@@ -576,13 +589,12 @@
 
 	<p id="p1">Is there a correlation between a wine's price and its rating? <br />
 		<p id="psub"> Hover over a wine data point to learn more about it <br />
-			<svg id=g2 height="600" width="700"></svg>
+			<svg id=g2 height="600" width="800"></svg>
+			<!-- <p id="buttonLabel"> Filter by grape variety below <br /></p> -->
 		</p>
 		<div id=btn>
 		</div>
 	</p>
-
-	<hr>
 
 	<svg height="200" width="1000"></svg>
 
