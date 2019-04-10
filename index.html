@@ -4,7 +4,7 @@
 	<script src="https://d3js.org/d3.v5.min.js"></script>
 	<script src="https://d3js.org/topojson.v2.min.js"></script>
 
-  <script src="https://d3js.org/topojson.v1.min.js"></script>
+	<script src="https://d3js.org/topojson.v1.min.js"></script>
 
 	<style>
 		body {
@@ -92,8 +92,9 @@
 
 <body>
 	<h1>Wine Reviews Trends </h1>
-	<p id="p0">Graph 1 <br />
-		<svg id=g1 height="900" width="1000" style="border:3px solid black"></svg>
+	<p id="p0"><br />
+		<svg id=g1 height="850" width="850"></svg>
+		<!-- <svg id=g1 height="850" width="850" style="border:3px solid black"></svg> -->
 		<script>
 			let svg = d3.select("svg#g1");
 
@@ -129,9 +130,9 @@
 						counts[topGrapes.indexOf(d['variety'])] += 1;
 						if (!(topProvinces[topGrapes.indexOf(d['variety'])]).includes(d['province'])) {
 							topProvinces[topGrapes.indexOf(d['variety'])].push(d['province']);
-							if (!provinces.includes(d['province'])) {
-								provinces.push(d['province']);
-							}
+							// if (!provinces.includes(d['province'])) {
+							// 	provinces.push(d['province']);
+							// }
 						}
 
 					}
@@ -164,7 +165,7 @@
 
 				// add colors
 				grapeColors = [];
-				top10grapes.forEach((d,i) => {
+				top10grapes.forEach((d, i) => {
 					grapeColors.push({
 						"grape": d,
 						"color": colors[i]
@@ -173,29 +174,28 @@
 				//console.log("grape colors =", grapeColors);
 
 				// END OF APRIL GRAPE COUNTING
+				let top10provinces = [];
+				for (var i = 0; i < top10grapes.length; i++) {
+					top10provinces.push([]);
+				}
 
+				data.forEach((d, i) => {
+					if (top10grapes.includes(d['variety'])) {
+						if (!provinces.includes(d['province'])) {
+							provinces.push(d['province']);
+						}
+						if (!(top10provinces[top10grapes.indexOf(d['variety'])].includes(d['province']))) {
+							// if (d['variety'] == "Merlot") {
+							// 	console.log(d['variety'] + ", and " + d['province']);
+							// }
+							top10provinces[top10grapes.indexOf(d['variety'])].push(d['province']);
+						}
+					}
+				});
 				topGrapes.splice(7, 1);
 				topProvinces.splice(7, 1);
 				topGrapes.splice(8, 1);
 				topProvinces.splice(8, 1);
-
-
-				// console.log("grapes: ");
-				// console.log(topGrapes);
-				// console.log("top provinces: ");
-				// console.log(topProvinces);
-				// console.log("provinces: ");
-				// console.log(provinces);
-				// console.log("counts: ");
-				// console.log(counts);
-
-				// svg.append("circle")
-				// .attr("cx", 400)
-				// .attr("cy", 350)
-				// .attr("r", 300)
-				// .attr("stroke", "black")
-				// .attr("stroke-width", 2)
-				// .attr("fill", "none")
 
 				let rotation;
 
@@ -209,7 +209,7 @@
 						.attr('r', 4)
 						.attr('cx', 450)
 						.attr('cy', 350)
-						.attr('id', provinces[i].split(" ")[0]) // CHECK THIS??
+						.attr('id', provinces[i].split(" ")[0])
 						.attr('fill', 'white')
 						.attr('transform', function (d) {
 							return 'translate(270, 100) rotate(' + rotation + ',' + 160 + ',' + 300 + ')';
@@ -234,15 +234,13 @@
 				for (var i = Math.PI / 5; i <= 4 * Math.PI / 5; i += Math.PI / 15) {
 					let pathData = arcGenerator({
 						startAngle: i,
-						endAngle: i + Math.PI / 20,
+						endAngle: i + Math.PI / 17,
 						innerRadius: 280,
 						outerRadius: 300
 					});
 					svg.append("path")
 						.attr('d', pathData)
 						.attr('id', "arc" + x)
-						//.attr('id', topGrapes[i].split(" ")[0]) // CHECK THIS??
-						//.attr('fill-opacity', new_opac)
 						.attr('fill', colors[x])
 						.attr('stroke', colors[x])
 						.attr('stroke-width', 3)
@@ -252,13 +250,10 @@
 								.transition().duration(400)
 								.attr('stroke-width', 20)
 
-							//console.log(this.id);
-
-							topProvinces.forEach((d, i) => {
+							top10provinces.forEach((d, i) => {
 								if (i < 10) {
-									//console.log(i);
 									d.forEach((d2, i2) => {
-										if (d2.split(" ")[0] != "Champagne" && i != this.id.replace("arc", "")) {
+										if (i != this.id.replace("arc", "")) {
 											d3.select("#grape" + i + "province" + i2).remove()
 										}
 
@@ -273,7 +268,7 @@
 
 							//console.log(this.id);
 
-							topProvinces.forEach((d, i) => {
+							top10provinces.forEach((d, i) => {
 								if (i < 10) {
 									//console.log(i);
 									d.forEach((d2, i2) => {
@@ -281,11 +276,11 @@
 											let cirCoordinates = d3.select("#" + d2.split(" ")[0]).node().getBoundingClientRect();
 											let arcCoordinates = d3.select("#arc" + i).node().getBoundingClientRect();
 											//console.log(d2.split(" ")[0]);
-											//console.log(cirCoordinates);
 											svg.append("line")
+												//.transition().duration(200)
 												.attr("id", "grape" + i + "province" + i2)
-												.attr("x1", cirCoordinates.left + cirCoordinates.width / 2)
-												.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY)
+												.attr("x1", cirCoordinates.left + cirCoordinates.width / 2 + 2)
+												.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3)
 												.attr("x2", arcCoordinates.left + arcCoordinates.width / 2)
 												.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY)
 												.attr("transform", "translate(-10, -120)")
@@ -307,7 +302,7 @@
 					var grapeLabels = svg.append("text")
 						.attr("x", 500)
 						.attr("y", 220)
-						.text(topGrapes[i])
+						.text(top10grapes[i])
 						.attr("text-anchor", "start")
 						.attr("fill", "white")
 						.attr("font-size", "12px")
@@ -315,39 +310,26 @@
 							return "translate(260, 175) rotate(" + rotation + "," + 130 + "," + 215 + ")";
 						})
 				}
-				//let test = d3.select("#Connecticut").node().getBoundingClientRect();
-				//let test = d3.select("arc4").node().getBoundingClientRect();
-				// svg.append("rect")
-				// 	.attr("x", test.x)
-				// 	.attr("y", test.y)
-				// 	.attr("width", test.width)
-				// 	.attr("height", test.height)
-				// 	.attr("stroke", "red")
-				// 	.attr("stroke-width", 1);
 
-				//console.log(test);
-				//console.log(test.node().getBoundingClientRect());
 				// LINES
-				topProvinces.forEach((d, i) => {
+				top10provinces.forEach((d, i) => {
 					if (i < 10) {
-						// console.log(i);
+						//console.log(i);
 						d.forEach((d2, i2) => {
-							if (d2.split(" ")[0] != "Champagne") {
-								let cirCoordinates = d3.select("#" + d2.split(" ")[0]).node().getBoundingClientRect();
-								let arcCoordinates = d3.select("#arc" + i).node().getBoundingClientRect();
-								//console.log(d2.split(" ")[0]);
-								//console.log(cirCoordinates);
-								svg.append("line")
-									.attr("id", "grape" + i + "province" + i2)
-									.attr("x1", cirCoordinates.left + cirCoordinates.width / 2)
-									.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY)
-									.attr("x2", arcCoordinates.left + arcCoordinates.width / 2)
-									.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY)
-									.attr("transform", "translate(-10, -120)")
-									.attr("stroke", colors[i])
-									.attr("stroke-width", 1);
-
-							}
+							//if (d2.split(" ")[0] != "Champagne") {
+							let cirCoordinates = d3.select("#" + d2.split(" ")[0]).node().getBoundingClientRect();
+							let arcCoordinates = d3.select("#arc" + i).node().getBoundingClientRect();
+							//console.log(d2.split(" ")[0]);
+							//console.log(cirCoordinates);
+							svg.append("line")
+								.attr("id", "grape" + i + "province" + i2)
+								.attr("x1", cirCoordinates.left + cirCoordinates.width / 2 + 2)
+								.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3)
+								.attr("x2", arcCoordinates.left + arcCoordinates.width / 2)
+								.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY)
+								.attr("transform", "translate(-10, -120)")
+								.attr("stroke", colors[i])
+								.attr("stroke-width", 1);
 
 						})
 					}
@@ -469,7 +451,7 @@
 
 										gInfo.append("rect")
 											.attr("id", "r" + d.x + "-" + d.y + "-" + i)
-											.attr("x", d['points'] > 90 ? pointScale(d['points'])-270 : pointScale(d['points']) + 20)
+											.attr("x", d['points'] > 90 ? pointScale(d['points']) - 270 : pointScale(d['points']) + 20)
 											.attr("y", parseFloat(d['price']) < 19 ? priceScale(d['price']) - 120 : priceScale(d['price']) - 20)
 											.attr("rx", 6)
 											.attr("ry", 6)
@@ -480,7 +462,7 @@
 
 										gInfo.append("text")
 											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-											.attr("dx", d['points'] > 90 ? pointScale(d['points'])-260 : pointScale(d['points']) + 30)
+											.attr("dx", d['points'] > 90 ? pointScale(d['points']) - 260 : pointScale(d['points']) + 30)
 											.attr("dy", parseFloat(d['price']) < 19 ? priceScale(d['price']) - 95 : priceScale(d['price']) + 5)
 											.attr("font-size", "16px")
 											.attr("font-weight", "bold")
@@ -489,7 +471,7 @@
 
 										gInfo.append("text")
 											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-											.attr("dx", d['points'] > 90 ? pointScale(d['points'])-260 : pointScale(d['points']) + 30)
+											.attr("dx", d['points'] > 90 ? pointScale(d['points']) - 260 : pointScale(d['points']) + 30)
 											.attr("dy", parseFloat(d['price']) < 19 ? priceScale(d['price']) - 75 : priceScale(d['price']) + 25)
 											.attr("font-size", "14px")
 											// .attr("font-weight", "bold")
@@ -498,7 +480,7 @@
 
 										gInfo.append("text")
 											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-											.attr("dx", d['points'] > 90 ? pointScale(d['points'])-260 : pointScale(d['points']) + 30)
+											.attr("dx", d['points'] > 90 ? pointScale(d['points']) - 260 : pointScale(d['points']) + 30)
 											.attr("dy", parseFloat(d['price']) < 19 ? priceScale(d['price']) - 55 : priceScale(d['price']) + 45)
 											.attr("font-size", "14px")
 											// .attr("font-weight", "bold")
@@ -507,7 +489,7 @@
 
 										gInfo.append("text")
 											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-											.attr("dx", d['points'] > 90 ? pointScale(d['points'])-260 : pointScale(d['points']) + 30)
+											.attr("dx", d['points'] > 90 ? pointScale(d['points']) - 260 : pointScale(d['points']) + 30)
 											.attr("dy", parseFloat(d['price']) < 19 ? priceScale(d['price']) - 35 : priceScale(d['price']) + 65)
 											.attr("font-size", "14px")
 											// .attr("font-weight", "bold")
@@ -516,7 +498,7 @@
 
 										gInfo.append("text")
 											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-											.attr("dx", d['points'] > 90 ? pointScale(d['points'])-260 : pointScale(d['points']) + 30)
+											.attr("dx", d['points'] > 90 ? pointScale(d['points']) - 260 : pointScale(d['points']) + 30)
 											.attr("dy", parseFloat(d['price']) < 19 ? priceScale(d['price']) - 15 : priceScale(d['price']) + 85)
 											.attr("font-size", "14px")
 											// .attr("font-weight", "bold")
@@ -525,7 +507,7 @@
 
 										gInfo.append("text")
 											.attr("id", "t" + d.x + "-" + d.y + "-" + i)
-											.attr("dx", d['points'] > 90 ? pointScale(d['points'])-260 : pointScale(d['points']) + 30)
+											.attr("dx", d['points'] > 90 ? pointScale(d['points']) - 260 : pointScale(d['points']) + 30)
 											.attr("dy", parseFloat(d['price']) < 19 ? priceScale(d['price']) + 5 : priceScale(d['price']) + 105)
 											.attr("font-size", "14px")
 											// .attr("font-weight", "bold")
@@ -599,8 +581,8 @@
 	<svg height="200" width="1000"></svg>
 
 	<div class="graphheader">
-	<h1 id = "p1">Which countries produce the wine you like?</h1>
-	<h2 id = "psub">Click through the slider to find out.</h2>
+		<h1 id="p1">Which countries produce the wine you like?</h1>
+		<h2 id="psub">Click through the slider to find out.</h2>
 	</div>
 
 	<div id="map"></div>
@@ -608,62 +590,62 @@
 
 	<script>
 
-	  var width2 = 960, height2 = 500;
-	  var projection = d3.geoAlbers();
-	  var path = d3.geoPath().projection(projection);
-	  var svg2 = d3.select("#map").append("svg")
-	    .attr("width", width2)
-	    .attr("height", height2);
-	  var g = svg2.append("g");
+		var width2 = 960, height2 = 500;
+		var projection = d3.geoAlbers();
+		var path = d3.geoPath().projection(projection);
+		var svg2 = d3.select("#map").append("svg")
+			.attr("width", width2)
+			.attr("height", height2);
+		var g = svg2.append("g");
 
 
-	  var wineData;
+		var wineData;
 		d3.csv("./winemag-data_first150k.csv").then(function (data) {
-	    wineData = data;
-	    function getCountryCodes(wineVariety){
-	      for(var i = 0; i < data.length; i++){
-	        var entry = data[i];
-	        if(entry["variety"] == wineVariety){
-	          return (entry["country codes"]);
-	        }
-	      }
-	      return [];
-	    };
+			wineData = data;
+			function getCountryCodes(wineVariety) {
+				for (var i = 0; i < data.length; i++) {
+					var entry = data[i];
+					if (entry["variety"] == wineVariety) {
+						return (entry["country codes"]);
+					}
+				}
+				return [];
+			};
 
-	  //	console.log(getCountryCodes("Pinot Noir"))
+			//	console.log(getCountryCodes("Pinot Noir"))
 
 			var worldData;
-	    var domainList = ["Pinot Noir", "Red Blend", "Chardonnay", "Merlot", "Cabernet Sauvignon"];
-	    d3.json("./world-50m.json", function(error, world){
-	    worldData = world;
-	    var initialVariety = "Pinot Noir";
-	    var initCountryList = getCountryCodes(initialVariety);
+			var domainList = ["Pinot Noir", "Red Blend", "Chardonnay", "Merlot", "Cabernet Sauvignon"];
+			d3.json("./world-50m.json", function (error, world) {
+				worldData = world;
+				var initialVariety = "Pinot Noir";
+				var initCountryList = getCountryCodes(initialVariety);
 
-	    g.selectAll("path")
-	    .data(topojson.feature(world, world.objects.countries).features)
-	    .enter().append("path").attr("d", path)
-	    .style("fill", function(country){
-	      if(initCountryList.indexOf(country.id) >= 0){
-	        return "#ff6378";
-	      } else {
-	        return "#2a3642";
-	      }
-	     });
+				g.selectAll("path")
+					.data(topojson.feature(world, world.objects.countries).features)
+					.enter().append("path").attr("d", path)
+					.style("fill", function (country) {
+						if (initCountryList.indexOf(country.id) >= 0) {
+							return "#ff6378";
+						} else {
+							return "#2a3642";
+						}
+					});
 
-	     d3.select('#slider5').call(d3.slider().scale(d3.scale.ordinal().domain(domainList).rangePoints([0,1], 0.5)).axis(d3.svg.axis()).snap(true).value("Pinot Noir").on("slide", function(evt, value){
-	       var v = domainList();
-	       var countryList = getCountryCodes(v);
-	       g.selectAll("path")
-	       .style("fill", function(country){
-	        if(countryList.indexOf(country.id) >= 0){
-	        return "#ff6378";
-	      } else {
-	        return "#2a3642";
-	      }
-	       });
-	     }));
-	   });
-	 });
+				d3.select('#slider5').call(d3.slider().scale(d3.scale.ordinal().domain(domainList).rangePoints([0, 1], 0.5)).axis(d3.svg.axis()).snap(true).value("Pinot Noir").on("slide", function (evt, value) {
+					var v = domainList();
+					var countryList = getCountryCodes(v);
+					g.selectAll("path")
+						.style("fill", function (country) {
+							if (countryList.indexOf(country.id) >= 0) {
+								return "#ff6378";
+							} else {
+								return "#2a3642";
+							}
+						});
+				}));
+			});
+		});
 	</script>
 
 
