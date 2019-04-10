@@ -93,8 +93,8 @@
 <body>
 	<h1>Wine Reviews Trends </h1>
 	<p id="p0"><br />
-		<svg id=g1 height="850" width="850"></svg>
-		<!-- <svg id=g1 height="850" width="850" style="border:3px solid black"></svg> -->
+		<svg id=g1 height="850" width="1200"></svg>
+		<!-- <svg id=g1 height="850" width="1200" style="border:3px solid black"></svg> -->
 		<script>
 			let svg = d3.select("svg#g1");
 
@@ -228,6 +228,19 @@
 
 				}
 
+				let varieties = [
+					"http://www.menageatroiswines.com/sites/default/files/Malbec.png",
+					"http://www.menageatroiswines.com/sites/default/files/CabernetSauvignon.png",
+					"http://www.menageatroiswines.com/sites/default/files/Chardonnay.png",
+					"http://www.menageatroiswines.com/sites/default/files/Merlot.png",
+					"http://www.menageatroiswines.com/sites/default/files/PinotNoir.png",
+					"http://www.menageatroiswines.com/sites/default/files/CaliforniaRed.png",
+					"https://www.totalwine.com/media/sys_master/twmmedia/h29/h65/8816329654302.png",
+					"http://www.menageatroiswines.com/sites/default/files/wine-sparkling-rose-bottle-glass.png",
+					"http://www.menageatroiswines.com/sites/default/files/SauvignonBlanc.png",
+					"https://www.totalwine.com/media/sys_master/twmmedia/h47/h5f/8798165434398.png"
+				];
+
 				//GRAPES ON THE RIGHT
 				let x = 0
 				let arcGenerator = d3.arc()
@@ -250,6 +263,21 @@
 								.transition().duration(400)
 								.attr('stroke-width', 20)
 
+							// svg.append("rect")
+							// 	.attr('x', 950)
+							// 	.attr('y', 50)
+							// 	.attr('width', 200)
+							// 	.attr('height', 400)
+							// 	.attr('stroke', 'white');
+
+							svg.append('image')
+								.attr('id', 'wine_image')
+								.attr('xlink:href', varieties[this.id.replace("arc", "")])
+								.attr('x', 1000)
+								.attr('y', 150)
+								.attr('width', 200)
+								.attr('height', 400);
+
 							top10provinces.forEach((d, i) => {
 								if (i < 10) {
 									d.forEach((d2, i2) => {
@@ -267,6 +295,8 @@
 								.attr('stroke-width', 3)
 
 							//console.log(this.id);
+
+							d3.select("#wine_image").remove();
 
 							top10provinces.forEach((d, i) => {
 								if (i < 10) {
