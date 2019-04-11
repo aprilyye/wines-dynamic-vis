@@ -243,6 +243,8 @@
 
 				//GRAPES ON THE RIGHT
 				let x = 0
+				var clicked = false;
+				var clickedGrape;
 				let arcGenerator = d3.arc()
 				for (var i = Math.PI / 5; i <= 4 * Math.PI / 5; i += Math.PI / 15) {
 					let pathData = arcGenerator({
@@ -259,69 +261,84 @@
 						.attr('stroke-width', 3)
 						.attr('transform', 'translate(450, 400)')
 						.on("mouseover", function () {
-							d3.select(this)
-								.transition().duration(400)
-								.attr('stroke-width', 20)
+							if (clicked == false) {
+								//console.log(d3.select(this)._groups[0][0].id);
+								d3.select(this)
+									.transition().duration(400)
+									.attr('stroke-width', 20)
 
-							// svg.append("rect")
-							// 	.attr('x', 950)
-							// 	.attr('y', 50)
-							// 	.attr('width', 200)
-							// 	.attr('height', 400)
-							// 	.attr('stroke', 'white');
+								svg.append('image')
+									.attr('id', 'wine_image')
+									.attr('xlink:href', varieties[this.id.replace("arc", "")])
+									.attr('x', 1000)
+									.attr('y', 150)
+									.attr('width', 200)
+									.attr('height', 400);
 
-							svg.append('image')
-								.attr('id', 'wine_image')
-								.attr('xlink:href', varieties[this.id.replace("arc", "")])
-								.attr('x', 1000)
-								.attr('y', 150)
-								.attr('width', 200)
-								.attr('height', 400);
+								top10provinces.forEach((d, i) => {
+									if (i < 10) {
+										d.forEach((d2, i2) => {
+											if (i != this.id.replace("arc", "")) {
+												d3.select("#grape" + i + "province" + i2).remove()
+											}
 
-							top10provinces.forEach((d, i) => {
-								if (i < 10) {
-									d.forEach((d2, i2) => {
-										if (i != this.id.replace("arc", "")) {
-											d3.select("#grape" + i + "province" + i2).remove()
-										}
-
-									})
+										})
+									}
+								});
+							}
+						})
+						.on("click", function () {
+							if (clicked == false) {
+								//console.log(d3.select(this)._groups[0][0].id);
+								clicked = true;
+								clickedGrape = d3.select(this)._groups[0][0].id;
+							}
+							else {
+								//console.log(d3.select(this)._groups[0][0].id == clickedGrape);
+								if (d3.select(this)._groups[0][0].id == clickedGrape) {
+									clicked = false;
 								}
-							});
+								else {
+									clicked = true;
+								}
+							}
+							//console.log(clicked);
 						})
 						.on("mouseout", function () {
-							d3.select(this)
-								.transition().duration(400)
-								.attr('stroke-width', 3)
+							if (clicked == false) {
+								d3.select(this)
+									.transition().duration(400)
+									.attr('stroke-width', 3)
 
-							//console.log(this.id);
+								//console.log(this.id);
 
-							d3.select("#wine_image").remove();
+								d3.select("#wine_image").remove();
 
-							top10provinces.forEach((d, i) => {
-								if (i < 10) {
-									//console.log(i);
-									d.forEach((d2, i2) => {
-										if (d2.split(" ")[0] != "Champagne" && i != this.id.replace("arc", "")) {
-											let cirCoordinates = d3.select("#" + d2.split(" ")[0]).node().getBoundingClientRect();
-											let arcCoordinates = d3.select("#arc" + i).node().getBoundingClientRect();
-											//console.log(d2.split(" ")[0]);
-											svg.append("line")
-												//.transition().duration(200)
-												.attr("id", "grape" + i + "province" + i2)
-												.attr("x1", cirCoordinates.left + cirCoordinates.width / 2 + 2)
-												.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3)
-												.attr("x2", arcCoordinates.left + arcCoordinates.width / 2)
-												.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY)
-												.attr("transform", "translate(-10, -120)")
-												.attr("stroke", colors[i])
-												.attr("stroke-width", 1);
+								top10provinces.forEach((d, i) => {
+									if (i < 10) {
+										//console.log(i);
+										d.forEach((d2, i2) => {
+											if (d2.split(" ")[0] != "Champagne" && i != this.id.replace("arc", "")) {
+												let cirCoordinates = d3.select("#" + d2.split(" ")[0]).node().getBoundingClientRect();
+												let arcCoordinates = d3.select("#arc" + i).node().getBoundingClientRect();
+												//console.log(d2.split(" ")[0]);
+												svg.append("line")
+													//.transition().duration(200)
+													.attr("id", "grape" + i + "province" + i2)
+													.attr("x1", cirCoordinates.left + cirCoordinates.width / 2 + 2)
+													.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3)
+													.attr("x2", arcCoordinates.left + arcCoordinates.width / 2)
+													.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY)
+													.attr("transform", "translate(-10, -120)")
+													.attr("stroke", colors[i])
+													.attr("stroke-width", 1);
 
-										}
+											}
 
-									})
-								}
-							});
+										})
+									}
+								});
+							}
 						})
 
 					x++;
