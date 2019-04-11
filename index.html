@@ -87,6 +87,29 @@
 		.gridlines .domain {
 			stroke: none;
 		}
+
+		.country {
+			/* fill: lightgrey; */
+			stroke: none;
+		}
+
+		.outline {
+			stroke: white;
+			stroke-width: 1px;
+			fill: none;
+		}
+
+		.graticule {
+			fill: none;
+			stroke: lightgrey;
+			stroke-width: 1px;
+		}
+
+		.districts {
+			fill: none;
+			stroke: white;
+			stroke-width: 1px;
+		}
 	</style>
 </head>
 
@@ -632,67 +655,215 @@
 		<h2 id="psub">Click through the slider to find out.</h2>
 	</div>
 
+	<svg id="worldMap" height="1000" width="1000" style="border:3px solid white"></svg>
+
 	<div id="map"></div>
-	<div id="slider5"></div>
+	<div id="slider"></div>
+	<div id="slider-step"></div>
 
 	<script>
 
-		var width2 = 960, height2 = 500;
-		var projection = d3.geoAlbers();
-		var path = d3.geoPath().projection(projection);
-		var svg2 = d3.select("#map").append("svg")
-			.attr("width", width2)
-			.attr("height", height2);
-		var g = svg2.append("g");
+		//	var width2 = 960, height2 = 500;
+
+		const svg3 = d3.select("#worldMap");
+		const width = svg.attr("width");
+		const height = svg.attr("height");
+		const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+		const mapWidth = width - margin.left - margin.right;
+		const mapHeight = height - margin.top - margin.bottom;
+		const map3 = svg3.append("g")
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		const requestData = async () => {
+			// problem 1a
+			const world = await d3.json("world_110m.json");
+
+			var countries = topojson.feature(world, world.objects.countries);
+			var countriesMesh = topojson.mesh(world, world.objects.countries);
+			//	console.log(world);
+
+			// problem 1c
+			var projection = d3.geoMercator().fitSize([mapWidth, mapHeight], countries);
+			var path = d3.geoPath().projection(projection);
+
+			//GRIDLINES
+			// map3.append("path")
+			// .datum(d3.geoGraticule10())
+			// .attr( "class", "graticule" )
+			// .attr( "d", path);
+
+			// map3.selectAll("path").data(countries.features)
+			// .enter()
+			// .append("path")
+			// .attr("class","country")
+			// .attr("d", path);
+
+			map3.append("path")
+				.datum(countriesMesh)
+				.attr("class", "outline")
+				.attr("d", path)
+		};
+		requestData();
+
 
 
 		var wineData;
-		d3.csv("./winemag-data_first150k.csv").then(function (data) {
-			wineData = data;
-			function getCountryCodes(wineVariety) {
-				for (var i = 0; i < data.length; i++) {
-					var entry = data[i];
-					if (entry["variety"] == wineVariety) {
-						return (entry["country codes"]);
-					}
-				}
-				return [];
-			};
+		var worldData;
+		var codeData;
 
-			//	console.log(getCountryCodes("Pinot Noir"))
+		d3.csv("./winemag-data_first150k.csv").then(function (wine) {
 
-			var worldData;
-			var domainList = ["Pinot Noir", "Red Blend", "Chardonnay", "Merlot", "Cabernet Sauvignon"];
-			d3.json("./world-50m.json", function (error, world) {
-				worldData = world;
-				var initialVariety = "Pinot Noir";
-				var initCountryList = getCountryCodes(initialVariety);
+			d3.json("./world_110m.json").then(function (world) {
 
-				g.selectAll("path")
-					.data(topojson.feature(world, world.objects.countries).features)
-					.enter().append("path").attr("d", path)
-					.style("fill", function (country) {
-						if (initCountryList.indexOf(country.id) >= 0) {
-							return "#ff6378";
-						} else {
-							return "#2a3642";
+				d3.csv("./country_code.csv").then(function (code) {
+
+					wineData = wine;
+					worldData = world;
+					codeData = code;
+					console.log(codeData);
+					function getCountryCodes(wineVariety) {
+						let countryList = [];
+						let countryCodeList = [];
+
+						for (var i = 0; i < wine.length; i++) {
+							var entryi = wine[i];
+							if (entryi["variety"] == wineVariety && !countryList.includes(entryi["country"])) {
+								for (var j = 0; j < codeData.length; j++) {
+									if (entryi["country"] == codeData[j].name && !countryCodeList.includes(codeData[j].code)) {
+										countryCodeList.push(codeData[j].code);
+									}
+								}
+								countryList.push(entryi["country"]);   //map country- country code
+							}
 						}
-					});
 
-				d3.select('#slider5').call(d3.slider().scale(d3.scale.ordinal().domain(domainList).rangePoints([0, 1], 0.5)).axis(d3.svg.axis()).snap(true).value("Pinot Noir").on("slide", function (evt, value) {
-					var v = domainList();
-					var countryList = getCountryCodes(v);
-					g.selectAll("path")
+						//countrylist = ["us", "china", ..]
+						// for (var j=0; j < countryList.length; j++){
+						// 	for (var z=0; z < code.length; z++){
+						// 		let entryz = code[z];
+						// 		if (countryList[j] == entryz["name"]){
+						// 			countryCodeList.push(entryz["id"]);
+						// 		}
+						// 	}
+						// }
+						console.log(countryList);
+						return countryCodeList;
+						//	return countryCodeList;
+					};
+
+					console.log(getCountryCodes("Pinot Noir"));
+
+
+
+					var domainList = ["Pinot Noir", "Red Blend", "Chardonnay", "Merlot", "Cabernet Sauvignon"];
+
+					var initialVariety = "Pinot Noir";
+					var initCountryList = getCountryCodes(initialVariety);
+
+					var countries = topojson.feature(world, world.objects.countries);
+					var countriesMesh = topojson.mesh(world, world.objects.countries);
+
+					var projection = d3.geoMercator().fitSize([mapWidth, mapHeight], countries);
+					var path = d3.geoPath().projection(projection);
+
+					map3.selectAll("path")
+						.data(countries.features)
+						.enter()
+						.append("path")
+						.attr("d", path)
+						.attr("class", "country")
 						.style("fill", function (country) {
-							if (countryList.indexOf(country.id) >= 0) {
+							//console.log(country.id);
+							//return "blue";
+							if (initCountryList.indexOf(country.id) >= 0) {
 								return "#ff6378";
 							} else {
 								return "#2a3642";
 							}
-						});
-				}));
-			});
+						})
+				})
+			})
 		});
+
+
+		var domainList = ["Pinot Noir", "Red Blend", "Chardonnay", "Merlot", "Cabernet Sauvignon"];
+
+		//
+		//
+		// d3.select('#slider5').call(d3.slider()
+		// .scale(d3.scale.ordinal()
+		// .domain(domainList)
+		// .rangePoints([0,1], 0.5))
+		// .axis(d3.svg.axis())
+		// .snap(true)
+		// .value("Pinot Noir")
+		// .on("slide", function(evt, value){
+		//   //var value = variety;
+		//   var countryList = getCountryCodes(value);
+		//   g.selectAll("path")
+		//   .style("fill", function(country){
+		//    if(countryList.indexOf(country.id) >= 0){
+		//    return "#ff6378";
+		//  } else {
+		//    return "#2a3642";
+		//  }
+		//   });
+		// });
+		//
+		//
+		//   var slidersDiv = d3.select("#controls").append("div");
+		//
+		//   slidersDiv.append("div")
+		//   .append("input")
+		//   .attr("type", "range")
+		//   .attr("class", "slider")
+		//   .style("width","300px")
+		//   .attr("min", 0)
+		//   .attr("max", 360)
+		//   .attr("step", 1)
+		//   .attr("value", 0)
+		//   .on("input", function () {
+		// 		map3.selectAll("path")
+		// 		.data(countries.features)
+		// 		.enter()
+		// 		.append("path")
+		// 		.attr("d", path)
+		// 		.attr("class","country")
+		// 		.style("fill", function(country){
+		// 			if(initCountryList.indexOf(country.id) >= 0){
+		// 				return "#ff6378";
+		// 			} else {
+		// 				return "#2a3642";
+		// 			}
+		// 		})
+		//   });
+		//
+
+		// var sliderStep = d3
+		// 	.sliderBottom()
+		// 	.min(0)
+		// 	.max(5)
+		// 	.width(1000)
+		// 	.ticks(5)
+		// 	.step(1)
+		// 	//  .default(0.015)
+		// 	.on('onchange', val => {
+		// 		d3.select('#slider');
+		// 	});
+
+		// var gStep = d3
+		// 	.select('div#slider-step')
+		// 	.append('svg3')
+		// 	.attr('width', 1000)
+		// 	.attr('height', 100)
+		// 	.append('g')
+		// 	.attr('transform', 'translate(30,30)');
+
+		// gStep.call(sliderStep);
+
+		// d3.select('#slider');
+
+
+
 	</script>
 
 
