@@ -744,7 +744,7 @@
 
 						for (var i = 0; i < wine.length; i++) {
 							var entryi = wine[i];
-							if (entryi["variety"] == wineVariety) {
+							if (entryi["variety"] == wineVariety || (wineVariety.slice(0, 3) == "Ros" && entryi["variety"].slice(0, 3) == "Ros")) {
 								for (var j = 0; j < codeData.length; j++) {
 									if (entryi["country"] == codeData[j].name && !countryCodeList.includes(codeData[j].code)) {
 										countryCodeList.push(codeData[j].code);
@@ -757,7 +757,7 @@
 						//return countryList;
 					};
 
-					console.log(getCountryCodes("Rosé"));
+					//console.log(getCountryCodes("Rosé"));
 
 					var domainList = ["Pinot Noir", "Red Blend", "Chardonnay", "Merlot", "Cabernet Sauvignon"];
 
