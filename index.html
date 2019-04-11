@@ -201,7 +201,6 @@
 				for (var i = 0; i < top10grapes.length; i++) {
 					top10provinces.push([]);
 				}
-
 				data.forEach((d, i) => {
 					if (top10grapes.includes(d['variety'])) {
 						if (!provinces.includes(d['province'])) {
@@ -655,11 +654,29 @@
 		<h2 id="psub">Click through the slider to find out.</h2>
 	</div>
 
-	<svg id="worldMap" height="1000" width="1000" style="border:3px solid white"></svg>
+	<!-- <svg id="worldMap" height="820" width="825" style="border:3px solid white"></svg> -->
+	<svg id="worldMap" height="750" width="825"></svg>
+
 
 	<div id="map"></div>
-	<div id="slider"></div>
-	<div id="slider-step"></div>
+	<p> <br /> </p>
+	<div id="slider" style="width:825px; margin:0 auto;"></div>
+	<!-- <svg id="slider-labels" height="200" width="900" style="border:3px solid white"></svg> -->
+
+	<p> <br /> <br /> <br /> <br /> <br /> <br /> </p>
+	<style>
+		/* #slider-labels {
+			margin-left: auto;
+			margin-right: auto;
+			display: block;
+		} */
+
+		#worldMap {
+			margin-left: auto;
+			margin-right: auto;
+			display: block;
+		}
+	</style>
 
 	<script>
 
@@ -699,6 +716,7 @@
 
 			map3.append("path")
 				.datum(countriesMesh)
+				.attr("transform", "translate(-200, 0)")
 				.attr("class", "outline")
 				.attr("d", path)
 		};
@@ -719,40 +737,27 @@
 					wineData = wine;
 					worldData = world;
 					codeData = code;
-					console.log(codeData);
+					//console.log(codeData);
 					function getCountryCodes(wineVariety) {
 						let countryList = [];
 						let countryCodeList = [];
 
 						for (var i = 0; i < wine.length; i++) {
 							var entryi = wine[i];
-							if (entryi["variety"] == wineVariety && !countryList.includes(entryi["country"])) {
+							if (entryi["variety"] == wineVariety) {
 								for (var j = 0; j < codeData.length; j++) {
 									if (entryi["country"] == codeData[j].name && !countryCodeList.includes(codeData[j].code)) {
 										countryCodeList.push(codeData[j].code);
 									}
 								}
-								countryList.push(entryi["country"]);   //map country- country code
+								//countryList.push(entryi["country"]);   //map country- country code
 							}
 						}
-
-						//countrylist = ["us", "china", ..]
-						// for (var j=0; j < countryList.length; j++){
-						// 	for (var z=0; z < code.length; z++){
-						// 		let entryz = code[z];
-						// 		if (countryList[j] == entryz["name"]){
-						// 			countryCodeList.push(entryz["id"]);
-						// 		}
-						// 	}
-						// }
-						console.log(countryList);
 						return countryCodeList;
-						//	return countryCodeList;
+						//return countryList;
 					};
 
-					console.log(getCountryCodes("Pinot Noir"));
-
-
+					console.log(getCountryCodes("Rosé"));
 
 					var domainList = ["Pinot Noir", "Red Blend", "Chardonnay", "Merlot", "Cabernet Sauvignon"];
 
@@ -771,6 +776,7 @@
 						.append("path")
 						.attr("d", path)
 						.attr("class", "country")
+						.attr("transform", "translate(-200, 0)")
 						.style("fill", function (country) {
 							//console.log(country.id);
 							//return "blue";
@@ -780,90 +786,33 @@
 								return "#2a3642";
 							}
 						})
+
+					var sliderDiv = d3.select("#slider").append("div").attr("transform", "translate");//.style("float", "bottom");
+					let top10grapes = ["Bordeaux-style Red Blend", "Cabernet Sauvignon", "Chardonnay", "Merlot", "Pinot Noir", "Red Blend", "Riesling", "RosÃ©", "Sauvignon Blanc", "Syrah"];
+					sliderDiv.append("div").append("input")
+						.attr("type", "range").attr("class", "slider")
+						.style("width", "825px")
+						.attr("min", 0)
+						.attr("max", 9)
+						.attr("step", 1)
+						.attr("value", 0)
+						.on("input", function () {
+							let newCountryList = getCountryCodes(top10grapes[this.value]);
+							map3.selectAll("path")
+								.style("fill", function (country) {
+									if (newCountryList.indexOf(country.id) >= 0) {
+										return "#ff6378";
+									} else {
+										return "#2a3642";
+									}
+								})
+							//console.log(newCountryList);
+							//console.log(this.value);
+
+						});
 				})
 			})
 		});
-
-
-		var domainList = ["Pinot Noir", "Red Blend", "Chardonnay", "Merlot", "Cabernet Sauvignon"];
-
-		//
-		//
-		// d3.select('#slider5').call(d3.slider()
-		// .scale(d3.scale.ordinal()
-		// .domain(domainList)
-		// .rangePoints([0,1], 0.5))
-		// .axis(d3.svg.axis())
-		// .snap(true)
-		// .value("Pinot Noir")
-		// .on("slide", function(evt, value){
-		//   //var value = variety;
-		//   var countryList = getCountryCodes(value);
-		//   g.selectAll("path")
-		//   .style("fill", function(country){
-		//    if(countryList.indexOf(country.id) >= 0){
-		//    return "#ff6378";
-		//  } else {
-		//    return "#2a3642";
-		//  }
-		//   });
-		// });
-		//
-		//
-		//   var slidersDiv = d3.select("#controls").append("div");
-		//
-		//   slidersDiv.append("div")
-		//   .append("input")
-		//   .attr("type", "range")
-		//   .attr("class", "slider")
-		//   .style("width","300px")
-		//   .attr("min", 0)
-		//   .attr("max", 360)
-		//   .attr("step", 1)
-		//   .attr("value", 0)
-		//   .on("input", function () {
-		// 		map3.selectAll("path")
-		// 		.data(countries.features)
-		// 		.enter()
-		// 		.append("path")
-		// 		.attr("d", path)
-		// 		.attr("class","country")
-		// 		.style("fill", function(country){
-		// 			if(initCountryList.indexOf(country.id) >= 0){
-		// 				return "#ff6378";
-		// 			} else {
-		// 				return "#2a3642";
-		// 			}
-		// 		})
-		//   });
-		//
-
-		// var sliderStep = d3
-		// 	.sliderBottom()
-		// 	.min(0)
-		// 	.max(5)
-		// 	.width(1000)
-		// 	.ticks(5)
-		// 	.step(1)
-		// 	//  .default(0.015)
-		// 	.on('onchange', val => {
-		// 		d3.select('#slider');
-		// 	});
-
-		// var gStep = d3
-		// 	.select('div#slider-step')
-		// 	.append('svg3')
-		// 	.attr('width', 1000)
-		// 	.attr('height', 100)
-		// 	.append('g')
-		// 	.attr('transform', 'translate(30,30)');
-
-		// gStep.call(sliderStep);
-
-		// d3.select('#slider');
-
-
-
 	</script>
 
 
