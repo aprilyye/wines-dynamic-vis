@@ -115,7 +115,11 @@
 
 <body>
 	<h1>Wine Reviews Trends </h1>
+	<p id="p1">Where do different wine varieties come from?<br /></p>
+	<p id="psub"> Hover over the wine varieties to see their origins<br /></p>
 	<p id="p0"><br />
+
+
 		<svg id=g1 height=" 850" width="1200" style="margin-left: 80px"></svg>
 		<!-- <svg id=g1 height="850" width="1200" style="border:3px solid black"></svg> -->
 		<script>
@@ -348,9 +352,9 @@
 													//.transition().duration(200)
 													.attr("id", "grape" + i + "province" + i2)
 													.attr("x1", cirCoordinates.left + cirCoordinates.width / 2 + 2 + window.scrollX - 80)
-													.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3)
+													.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3 - 143)
 													.attr("x2", arcCoordinates.left + arcCoordinates.width / 2 + window.scrollX - 80)
-													.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY)
+													.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY - 143)
 													.attr("transform", "translate(-10, -120)")
 													.attr("stroke", colors[i])
 													.attr("stroke-width", 1);
@@ -393,9 +397,9 @@
 							svg.append("line")
 								.attr("id", "grape" + i + "province" + i2)
 								.attr("x1", cirCoordinates.left + cirCoordinates.width / 2 + 2 + window.scrollX - 80)
-								.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3)
+								.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3 - 143)
 								.attr("x2", arcCoordinates.left + arcCoordinates.width / 2 + window.scrollX - 80)
-								.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY)
+								.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY - 143)
 								.attr("transform", "translate(-10, -120)")
 								.attr("stroke", colors[i])
 								.attr("stroke-width", 1);
