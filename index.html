@@ -7,8 +7,6 @@
 
 
 	<script src="https://d3js.org/topojson.v1.min.js"></script>
-	<!-- <script src="d3.slider.js"></script> --
-  <!-- <link rel="stylesheet" href="css/d3.slider.css"/> -->
 
 	<style>
 		body {
@@ -20,6 +18,8 @@
 		h1 {
 			text-align: center;
 			margin-top: 40px;
+			font-size: 40px;
+			font-weight: normal;
 		}
 
 		#p1 {
@@ -31,6 +31,8 @@
 		#psub {
 			text-align: center;
 			font-size: 25px;
+			margin-top: -25px;
+			color: #767d92;
 		}
 
 		.axis {
@@ -42,7 +44,6 @@
 			margin-left: 30px;
 			text-align: left;
 			float: left;
-			/* position: relative; */
 		}
 
 		#btn {
@@ -113,14 +114,14 @@
 </head>
 
 <body>
-	<h1>Wine Reviews Trends </h1>
+	<svg height="50" width="1000"></svg>
+
 	<p id="p1">Where do different wine varieties come from?<br /></p>
 	<p id="psub"> Hover over the wine varieties to see their origins<br /></p>
 	<p id="p0"><br />
 
 
 		<svg id=g1 height=" 850" width="1200" style="margin-left: 80px"></svg>
-		<!-- <svg id=g1 height="850" width="1200" style="border:3px solid black"></svg> -->
 		<script>
 			let svg = d3.select("svg#g1");
 
@@ -131,22 +132,15 @@
 			let provinces = [];
 			let colors = ["#d35252", "#8e1c2f", "#fcd525", "#d31785", "#ea6eb7", "#e20e06", "#f6f9cf", "#f28b87", "#f9c384", "#891c79"];
 
-			//let counts = [];
 			d3.csv("./winemag-data-130k-v2.csv").then(function (data) {
 
 				data = data.filter(d => d['region_1'] != '' && d['price'] != '');
-				//console.log(data);
 				data.forEach((d, i) => {
-					// if(!grapes.includes(d['variety'])) {
-					// 	grapes.push(d['variety']);
-					// 	regions.push(d['region_1']);
-					// }
 					if (d['points'] == '100') {
 						topGrapes.push(d['variety']);
 						topProvinces.push([d['province']]);
 					}
 				});
-				//console.log(topRegions);
 
 				let counts = new Array(topGrapes.length);
 				counts.fill(1);
@@ -156,9 +150,6 @@
 						counts[topGrapes.indexOf(d['variety'])] += 1;
 						if (!(topProvinces[topGrapes.indexOf(d['variety'])]).includes(d['province'])) {
 							topProvinces[topGrapes.indexOf(d['variety'])].push(d['province']);
-							// if (!provinces.includes(d['province'])) {
-							// 	provinces.push(d['province']);
-							// }
 						}
 
 					}
@@ -197,7 +188,6 @@
 						"color": colors[i]
 					})
 				});
-				//console.log("grape colors =", grapeColors);
 
 				// END OF APRIL GRAPE COUNTING
 				let top10provinces = [];
@@ -210,9 +200,6 @@
 							provinces.push(d['province']);
 						}
 						if (!(top10provinces[top10grapes.indexOf(d['variety'])].includes(d['province']))) {
-							// if (d['variety'] == "Merlot") {
-							// 	console.log(d['variety'] + ", and " + d['province']);
-							// }
 							top10provinces[top10grapes.indexOf(d['variety'])].push(d['province']);
 						}
 					}
@@ -287,7 +274,6 @@
 						.attr('transform', 'translate(450, 400)')
 						.on("mouseover", function () {
 							if (clicked == false) {
-								//console.log(d3.select(this)._groups[0][0].id);
 								d3.select(this)
 									.transition().duration(400)
 									.attr('stroke-width', 20)
@@ -312,23 +298,6 @@
 								});
 							}
 						})
-						// .on("click", function () {
-						// 	if (clicked == false) {
-						// 		//console.log(d3.select(this)._groups[0][0].id);
-						// 		clicked = true;
-						// 		clickedGrape = d3.select(this)._groups[0][0].id;
-						// 	}
-						// 	else {
-						// 		//console.log(d3.select(this)._groups[0][0].id == clickedGrape);
-						// 		if (d3.select(this)._groups[0][0].id == clickedGrape) {
-						// 			clicked = false;
-						// 		}
-						// 		else {
-						// 			clicked = true;
-						// 		}
-						// 	}
-						// 	//console.log(clicked);
-						// })
 						.on("mouseout", function () {
 							if (clicked == false) {
 								d3.select(this)
@@ -346,9 +315,7 @@
 											if (d2.split(" ")[0] != "Champagne" && i != this.id.replace("arc", "")) {
 												let cirCoordinates = d3.select("#" + d2.split(" ")[0]).node().getBoundingClientRect();
 												let arcCoordinates = d3.select("#arc" + i).node().getBoundingClientRect();
-												//console.log(d2.split(" ")[0]);
 												svg.append("line")
-													//.transition().duration(200)
 													.attr("id", "grape" + i + "province" + i2)
 													.attr("x1", cirCoordinates.left + cirCoordinates.width / 2 + 2 + window.scrollX - 80)
 													.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3 - 143)
@@ -386,13 +353,9 @@
 				// LINES
 				top10provinces.forEach((d, i) => {
 					if (i < 10) {
-						//console.log(i);
 						d.forEach((d2, i2) => {
-							//if (d2.split(" ")[0] != "Champagne") {
 							let cirCoordinates = d3.select("#" + d2.split(" ")[0]).node().getBoundingClientRect();
 							let arcCoordinates = d3.select("#arc" + i).node().getBoundingClientRect();
-							//console.log(d2.split(" ")[0]);
-							//console.log(cirCoordinates);
 							svg.append("line")
 								.attr("id", "grape" + i + "province" + i2)
 								.attr("x1", cirCoordinates.left + cirCoordinates.width / 2 + 2 + window.scrollX - 80)
@@ -420,7 +383,6 @@
 				// x axis
 				let maxPoint = d3.max(data, d => parseInt(d['points'], 10));
 				let minPoint = d3.min(data, d => parseInt(d['points'], 10));
-				// console.log("max points =", minPoint, maxPoint);
 
 				var pointScale = d3.scaleLinear()
 					.domain([minPoint, maxPoint])
@@ -429,7 +391,6 @@
 				// y axis
 				let maxPrice = d3.max(data, d => parseFloat(d['price']));
 				let minPrice = d3.min(data, d => parseFloat(d['price']));
-				// console.log("max price =", minPrice, maxPrice);
 
 				var priceScale = d3.scaleLog()
 					.domain([minPrice + 1, maxPrice + 1])
@@ -546,7 +507,6 @@
 											.attr("dx", d['points'] > 90 ? pointScale(d['points']) - 260 : pointScale(d['points']) + 30)
 											.attr("dy", parseFloat(d['price']) < 19 ? priceScale(d['price']) - 75 : priceScale(d['price']) + 25)
 											.attr("font-size", "14px")
-											// .attr("font-weight", "bold")
 											.style("fill", "black")
 											.text("rating: " + d['points']);
 
@@ -555,7 +515,6 @@
 											.attr("dx", d['points'] > 90 ? pointScale(d['points']) - 260 : pointScale(d['points']) + 30)
 											.attr("dy", parseFloat(d['price']) < 19 ? priceScale(d['price']) - 55 : priceScale(d['price']) + 45)
 											.attr("font-size", "14px")
-											// .attr("font-weight", "bold")
 											.style("fill", "black")
 											.text("price: $" + parseFloat(d['price']).toFixed(2));
 
@@ -564,7 +523,6 @@
 											.attr("dx", d['points'] > 90 ? pointScale(d['points']) - 260 : pointScale(d['points']) + 30)
 											.attr("dy", parseFloat(d['price']) < 19 ? priceScale(d['price']) - 35 : priceScale(d['price']) + 65)
 											.attr("font-size", "14px")
-											// .attr("font-weight", "bold")
 											.style("fill", "black")
 											.text("variety: " + d['variety']);
 
@@ -573,7 +531,6 @@
 											.attr("dx", d['points'] > 90 ? pointScale(d['points']) - 260 : pointScale(d['points']) + 30)
 											.attr("dy", parseFloat(d['price']) < 19 ? priceScale(d['price']) - 15 : priceScale(d['price']) + 85)
 											.attr("font-size", "14px")
-											// .attr("font-weight", "bold")
 											.style("fill", "black")
 											.text("province: " + d['province']);
 
@@ -582,7 +539,6 @@
 											.attr("dx", d['points'] > 90 ? pointScale(d['points']) - 260 : pointScale(d['points']) + 30)
 											.attr("dy", parseFloat(d['price']) < 19 ? priceScale(d['price']) + 5 : priceScale(d['price']) + 105)
 											.attr("font-size", "14px")
-											// .attr("font-weight", "bold")
 											.style("fill", "black")
 											.text("region: " + d['region_1']);
 
@@ -600,7 +556,6 @@
 						}
 					});
 
-					// console.log("count =", grapeCount);
 				}
 
 				scatterCircles("");
@@ -630,7 +585,6 @@
 					.attr("type", "button")
 					.attr("class", "button")
 					.attr("value", d => d)
-					// .attr("class", (d,i) => ("button"+i))
 					.on("click", function (d) {
 						svg2.selectAll("circle").remove();
 						scatterCircles(d);
@@ -640,24 +594,23 @@
 
 		</script>
 	</p>
+	<svg height="100" width="1000"></svg>
 
 	<p id="p1">Is there a correlation between a wine's price and its rating? <br />
-		<p id="psub"> Hover over a wine data point to learn more about it <br />
+		<p id="psub"> Hover over a wine data point to learn more about it. <br />
 			<svg id=g2 height="600" width="800"></svg>
-			<!-- <p id="buttonLabel"> Filter by grape variety below <br /></p> -->
 		</p>
 		<div id=btn>
 		</div>
 	</p>
 
-	<svg height="200" width="1000"></svg>
+	<svg height="100" width="1000"></svg>
 
 	<div class="graphheader">
 		<p id="p1">Which countries produce the wine you like?</p>
 		<p id="psub">Click through the slider to find out.</p>
 	</div>
 
-	<!-- <svg id="worldMap" height="820" width="825" style="border:3px solid white"></svg> -->
 	<svg id="worldMap" height="570" width="825"></svg>
 
 
@@ -665,16 +618,8 @@
 	<div id="slider" class="range">
 		<p id="value-step"></p>
 	</div>
-	<!-- <svg id="slider-labels" height="200" width="900" style="border:3px solid white"></svg> -->
 
-	<p> <br /> <br /> <br /> <br /> <br /> <br /> </p>
 	<style>
-		/* #slider-labels {
-			margin-left: auto;
-			margin-right: auto;
-			display: block;
-		} */
-
 		#worldMap {
 			margin-left: auto;
 			margin-right: auto;
@@ -709,8 +654,6 @@
 
 	<script>
 
-		//	var width2 = 960, height2 = 500;
-
 		const svg3 = d3.select("#worldMap");
 		const width = svg.attr("width");
 		const height = svg.attr("height");
@@ -720,14 +663,10 @@
 		const map3 = svg3.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 		const requestData = async () => {
-			// problem 1a
 			const world = await d3.json("world_110m.json");
 
 			var countries = topojson.feature(world, world.objects.countries);
 			var countriesMesh = topojson.mesh(world, world.objects.countries);
-			//	console.log(world);
-
-			// problem 1c
 			var projection = d3.geoMercator().fitSize([mapWidth, mapHeight], countries);
 			var path = d3.geoPath().projection(projection);
 
@@ -738,8 +677,6 @@
 				.attr("d", path)
 		};
 		requestData();
-
-
 
 		var wineData;
 		var worldData;
@@ -754,7 +691,6 @@
 					wineData = wine;
 					worldData = world;
 					codeData = code;
-					//console.log(codeData);
 					function getCountryCodes(wineVariety) {
 						let countryList = [];
 						let countryCodeList = [];
@@ -767,14 +703,10 @@
 										countryCodeList.push(codeData[j].code);
 									}
 								}
-								//countryList.push(entryi["country"]);   //map country- country code
 							}
 						}
 						return countryCodeList;
-						//return countryList;
 					};
-
-					//console.log(getCountryCodes("Rosé"));
 
 					var domainList = ["Pinot Noir", "Red Blend", "Chardonnay", "Merlot", "Cabernet Sauvignon"];
 
@@ -795,8 +727,6 @@
 						.attr("class", "country")
 						.attr("transform", "translate(-200, 0)")
 						.style("fill", function (country) {
-							//console.log(country.id);
-							//return "blue";
 							if (initCountryList.indexOf(country.id) >= 0) {
 								return "#d31785";
 							} else {
@@ -804,7 +734,7 @@
 							}
 						})
 
-					var sliderDiv = d3.select("#slider").append("div").attr("transform", "translate(50, 0)");//.style("float", "bottom");
+				var sliderDiv = d3.select("#slider").append("div").attr("transform", "translate(50, 0)");
 
 				let top10grapes = ["Bordeaux-style Red Blend", "Cabernet Sauvignon", "Chardonnay", "Merlot", "Pinot Noir", "Red Blend", "Riesling", "RosÃ©", "Sauvignon Blanc", "Syrah"];
 
@@ -825,7 +755,6 @@
 						.max(9)
 				    .ticks(9)
 				    .step(1)
-						// .default(top10grapes[0])
 				    .on('onchange', val => {
 				      d3.select('p#value-step').text(top10grapes[val]);
 							let newCountryList = getCountryCodes(top10grapes[val]);
@@ -839,6 +768,8 @@
 								})
 							if (val == 7) {
 								d3.select('p#value-step').text("Rose");
+							} else if (val == 0) {
+								d3.select('p#value-step').text("Bordeaux-style Red");
 							}
 
 				    });
@@ -855,7 +786,7 @@
 				  gStep.call(sliderStep);
 
 					if (sliderStep.value() == 0) {
-						d3.select('p#value-step').text(top10grapes[0]);
+						d3.select('p#value-step').text("Bordeaux-style Red");
 					} else {
 						d3.select('p#value-step').text(sliderStep.value());
 					}
