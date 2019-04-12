@@ -116,7 +116,7 @@
 <body>
 	<h1>Wine Reviews Trends </h1>
 	<p id="p0"><br />
-		<svg id=g1 height="850" width="1200"></svg>
+		<svg id=g1 height=" 850" width="1200" style="margin-left: 80px"></svg>
 		<!-- <svg id=g1 height="850" width="1200" style="border:3px solid black"></svg> -->
 		<script>
 			let svg = d3.select("svg#g1");
@@ -271,7 +271,7 @@
 				for (var i = Math.PI / 5; i <= 4 * Math.PI / 5; i += Math.PI / 15) {
 					let pathData = arcGenerator({
 						startAngle: i,
-						endAngle: i + Math.PI / 17,
+						endAngle: i + Math.PI / 20,
 						innerRadius: 280,
 						outerRadius: 300
 					});
@@ -309,23 +309,23 @@
 								});
 							}
 						})
-						.on("click", function () {
-							if (clicked == false) {
-								//console.log(d3.select(this)._groups[0][0].id);
-								clicked = true;
-								clickedGrape = d3.select(this)._groups[0][0].id;
-							}
-							else {
-								//console.log(d3.select(this)._groups[0][0].id == clickedGrape);
-								if (d3.select(this)._groups[0][0].id == clickedGrape) {
-									clicked = false;
-								}
-								else {
-									clicked = true;
-								}
-							}
-							//console.log(clicked);
-						})
+						// .on("click", function () {
+						// 	if (clicked == false) {
+						// 		//console.log(d3.select(this)._groups[0][0].id);
+						// 		clicked = true;
+						// 		clickedGrape = d3.select(this)._groups[0][0].id;
+						// 	}
+						// 	else {
+						// 		//console.log(d3.select(this)._groups[0][0].id == clickedGrape);
+						// 		if (d3.select(this)._groups[0][0].id == clickedGrape) {
+						// 			clicked = false;
+						// 		}
+						// 		else {
+						// 			clicked = true;
+						// 		}
+						// 	}
+						// 	//console.log(clicked);
+						// })
 						.on("mouseout", function () {
 							if (clicked == false) {
 								d3.select(this)
@@ -347,9 +347,9 @@
 												svg.append("line")
 													//.transition().duration(200)
 													.attr("id", "grape" + i + "province" + i2)
-													.attr("x1", cirCoordinates.left + cirCoordinates.width / 2 + 2 + window.scrollX)
+													.attr("x1", cirCoordinates.left + cirCoordinates.width / 2 + 2 + window.scrollX - 80)
 													.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3)
-													.attr("x2", arcCoordinates.left + arcCoordinates.width / 2 + window.scrollX)
+													.attr("x2", arcCoordinates.left + arcCoordinates.width / 2 + window.scrollX - 80)
 													.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY)
 													.attr("transform", "translate(-10, -120)")
 													.attr("stroke", colors[i])
@@ -392,9 +392,9 @@
 							//console.log(cirCoordinates);
 							svg.append("line")
 								.attr("id", "grape" + i + "province" + i2)
-								.attr("x1", cirCoordinates.left + cirCoordinates.width / 2 + 2 + window.scrollX)
+								.attr("x1", cirCoordinates.left + cirCoordinates.width / 2 + 2 + window.scrollX - 80)
 								.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3)
-								.attr("x2", arcCoordinates.left + arcCoordinates.width / 2 + window.scrollX)
+								.attr("x2", arcCoordinates.left + arcCoordinates.width / 2 + window.scrollX - 80)
 								.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY)
 								.attr("transform", "translate(-10, -120)")
 								.attr("stroke", colors[i])
