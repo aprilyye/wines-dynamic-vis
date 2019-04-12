@@ -3,14 +3,18 @@
 <head>
 	<script src="https://d3js.org/d3.v5.min.js"></script>
 	<script src="https://d3js.org/topojson.v2.min.js"></script>
+	<script src="https://unpkg.com/d3-simple-slider"></script>
+
 
 	<script src="https://d3js.org/topojson.v1.min.js"></script>
+	<!-- <script src="d3.slider.js"></script> --
+  <!-- <link rel="stylesheet" href="css/d3.slider.css"/> -->
 
 	<style>
 		body {
 			color: #fcf9f9;
 			background-color: #22252d;
-			font-family: "Arial";
+			font-family: "Verdana";
 		}
 
 		h1 {
@@ -21,11 +25,16 @@
 		#p1 {
 			text-align: center;
 			font-size: 35px;
+			font-style: "Roboto";
 		}
 
 		#psub {
 			text-align: center;
 			font-size: 25px;
+		}
+
+		.axis {
+			font-size: 10px;
 		}
 
 		#g2 {
@@ -43,16 +52,6 @@
 			text-align: left;
 			width: 40%
 		}
-
-		/* #buttonLabel {
-			margin-top: 50px;
-			display: inline-block;
-			margin-right: 270px;
-			color: #f27b99;
-			text-align: center;
-			font-size: 25px;
-			float: right;
-		} */
 
 		.button {
 			background-color: #f4f4f4;
@@ -126,7 +125,7 @@
 			let regions = [];
 			let topProvinces = [];
 			let provinces = [];
-			let colors = ["#d35252", "#f9d6d6", "#fcd525", "#d31785", "#ea6eb7", "#e20e06", "#f6f9cf", "#f28b87", "#bc432b", "#f9a898"];
+			let colors = ["#d35252", "#8e1c2f", "#fcd525", "#d31785", "#ea6eb7", "#e20e06", "#f6f9cf", "#f28b87", "#f9c384", "#891c79"];
 
 			//let counts = [];
 			d3.csv("./winemag-data-130k-v2.csv").then(function (data) {
@@ -650,17 +649,18 @@
 	<svg height="200" width="1000"></svg>
 
 	<div class="graphheader">
-		<h1 id="p1">Which countries produce the wine you like?</h1>
-		<h2 id="psub">Click through the slider to find out.</h2>
+		<p id="p1">Which countries produce the wine you like?</p>
+		<p id="psub">Click through the slider to find out.</p>
 	</div>
 
 	<!-- <svg id="worldMap" height="820" width="825" style="border:3px solid white"></svg> -->
-	<svg id="worldMap" height="750" width="825"></svg>
+	<svg id="worldMap" height="570" width="825"></svg>
 
 
 	<div id="map"></div>
-	<p> <br /> </p>
-	<div id="slider" style="width:825px; margin:0 auto;"></div>
+	<div id="slider" class="range">
+		<p id="value-step"></p>
+	</div>
 	<!-- <svg id="slider-labels" height="200" width="900" style="border:3px solid white"></svg> -->
 
 	<p> <br /> <br /> <br /> <br /> <br /> <br /> </p>
@@ -676,6 +676,31 @@
 			margin-right: auto;
 			display: block;
 		}
+
+		#sliderStyle {
+			margin-left: auto;
+			margin-right: auto;
+			display: block;
+		}
+
+		.tick {
+			color: #ffffff;
+			font-size: 14px;
+		}
+
+		#slider {
+			margin-top: -50px;
+			margin-left: 12%;
+			width:825px;
+			display: inline-block;
+		}
+
+		p#value-step {
+			font-size: 24px;
+			color: #d31785;
+			font-weight: bold;
+		}
+
 	</style>
 
 	<script>
@@ -701,18 +726,6 @@
 			// problem 1c
 			var projection = d3.geoMercator().fitSize([mapWidth, mapHeight], countries);
 			var path = d3.geoPath().projection(projection);
-
-			//GRIDLINES
-			// map3.append("path")
-			// .datum(d3.geoGraticule10())
-			// .attr( "class", "graticule" )
-			// .attr( "d", path);
-
-			// map3.selectAll("path").data(countries.features)
-			// .enter()
-			// .append("path")
-			// .attr("class","country")
-			// .attr("d", path);
 
 			map3.append("path")
 				.datum(countriesMesh)
@@ -781,35 +794,68 @@
 							//console.log(country.id);
 							//return "blue";
 							if (initCountryList.indexOf(country.id) >= 0) {
-								return "#ff6378";
+								return "#d31785";
 							} else {
 								return "#2a3642";
 							}
 						})
 
-					var sliderDiv = d3.select("#slider").append("div").attr("transform", "translate");//.style("float", "bottom");
-					let top10grapes = ["Bordeaux-style Red Blend", "Cabernet Sauvignon", "Chardonnay", "Merlot", "Pinot Noir", "Red Blend", "Riesling", "RosÃ©", "Sauvignon Blanc", "Syrah"];
-					sliderDiv.append("div").append("input")
-						.attr("type", "range").attr("class", "slider")
-						.style("width", "825px")
-						.attr("min", 0)
-						.attr("max", 9)
-						.attr("step", 1)
-						.attr("value", 0)
-						.on("input", function () {
-							let newCountryList = getCountryCodes(top10grapes[this.value]);
+					var sliderDiv = d3.select("#slider").append("div").attr("transform", "translate(50, 0)");//.style("float", "bottom");
+
+				let top10grapes = ["Bordeaux-style Red Blend", "Cabernet Sauvignon", "Chardonnay", "Merlot", "Pinot Noir", "Red Blend", "Riesling", "RosÃ©", "Sauvignon Blanc", "Syrah"];
+
+				var sliderStep = d3
+				    .sliderBottom()
+				    .width(1000)
+						.tickFormat(function(d,i){
+							if (i == 7) {
+								return "Rose";
+							} else if (i == 0) {
+								return "Bordeaux-style";
+							} else if (i == 1) {
+								return "Cabernet";
+							} else {
+								return top10grapes[i];
+							}
+						})
+						.max(9)
+				    .ticks(9)
+				    .step(1)
+						// .default(top10grapes[0])
+				    .on('onchange', val => {
+				      d3.select('p#value-step').text(top10grapes[val]);
+							let newCountryList = getCountryCodes(top10grapes[val]);
 							map3.selectAll("path")
 								.style("fill", function (country) {
 									if (newCountryList.indexOf(country.id) >= 0) {
-										return "#ff6378";
+										return "#d31785";
 									} else {
 										return "#2a3642";
 									}
 								})
-							//console.log(newCountryList);
-							//console.log(this.value);
+							if (val == 7) {
+								d3.select('p#value-step').text("Rose");
+							}
 
-						});
+				    });
+
+				  var gStep = d3
+				    .select('div#slider')
+				    .append('svg')
+						.attr("class", "sliderStyle")
+				    .attr('width', 1200)
+				    .attr('height', 200)
+				    .append('g')
+				    .attr('transform', 'translate(100,30)');
+
+				  gStep.call(sliderStep);
+
+					if (sliderStep.value() == 0) {
+						d3.select('p#value-step').text(top10grapes[0]);
+					} else {
+						d3.select('p#value-step').text(sliderStep.value());
+					}
+
 				})
 			})
 		});
