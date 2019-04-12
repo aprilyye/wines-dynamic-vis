@@ -1,4 +1,6 @@
 <html>
+<!-- Got inspiration for circle graph from P1 Showcase (https://mimno.github.io/showcase/project1/satellite_data/)
+Got inspiration for world map slider from P2 Showcase (https://mimno.github.io/showcase/project2/holidays/) -->
 
 <head>
 	<script src="https://d3js.org/d3.v5.min.js"></script>
@@ -318,9 +320,9 @@
 												svg.append("line")
 													.attr("id", "grape" + i + "province" + i2)
 													.attr("x1", cirCoordinates.left + cirCoordinates.width / 2 + 2 + window.scrollX - 80)
-													.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3 - 143)
+													.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3 - 103)
 													.attr("x2", arcCoordinates.left + arcCoordinates.width / 2 + window.scrollX - 80)
-													.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY - 143)
+													.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY - 103)
 													.attr("transform", "translate(-10, -120)")
 													.attr("stroke", colors[i])
 													.attr("stroke-width", 1);
@@ -359,9 +361,9 @@
 							svg.append("line")
 								.attr("id", "grape" + i + "province" + i2)
 								.attr("x1", cirCoordinates.left + cirCoordinates.width / 2 + 2 + window.scrollX - 80)
-								.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3 - 143)
+								.attr("y1", cirCoordinates.bottom - cirCoordinates.height / 2 + window.scrollY + 3 - 103)
 								.attr("x2", arcCoordinates.left + arcCoordinates.width / 2 + window.scrollX - 80)
-								.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY - 143)
+								.attr("y2", arcCoordinates.bottom - arcCoordinates.height / 2 + window.scrollY - 103)
 								.attr("transform", "translate(-10, -120)")
 								.attr("stroke", colors[i])
 								.attr("stroke-width", 1);
@@ -640,7 +642,7 @@
 		#slider {
 			margin-top: -50px;
 			margin-left: 12%;
-			width:825px;
+			width: 825px;
 			display: inline-block;
 		}
 
@@ -649,7 +651,6 @@
 			color: #d31785;
 			font-weight: bold;
 		}
-
 	</style>
 
 	<script>
@@ -734,14 +735,14 @@
 							}
 						})
 
-				var sliderDiv = d3.select("#slider").append("div").attr("transform", "translate(50, 0)");
+					var sliderDiv = d3.select("#slider").append("div").attr("transform", "translate(50, 0)");
 
-				let top10grapes = ["Bordeaux-style Red Blend", "Cabernet Sauvignon", "Chardonnay", "Merlot", "Pinot Noir", "Red Blend", "Riesling", "RosÃ©", "Sauvignon Blanc", "Syrah"];
+					let top10grapes = ["Bordeaux-style Red Blend", "Cabernet Sauvignon", "Chardonnay", "Merlot", "Pinot Noir", "Red Blend", "Riesling", "RosÃ©", "Sauvignon Blanc", "Syrah"];
 
-				var sliderStep = d3
-				    .sliderBottom()
-				    .width(1000)
-						.tickFormat(function(d,i){
+					var sliderStep = d3
+						.sliderBottom()
+						.width(1000)
+						.tickFormat(function (d, i) {
 							if (i == 7) {
 								return "Rose";
 							} else if (i == 0) {
@@ -753,10 +754,10 @@
 							}
 						})
 						.max(9)
-				    .ticks(9)
-				    .step(1)
-				    .on('onchange', val => {
-				      d3.select('p#value-step').text(top10grapes[val]);
+						.ticks(9)
+						.step(1)
+						.on('onchange', val => {
+							d3.select('p#value-step').text(top10grapes[val]);
 							let newCountryList = getCountryCodes(top10grapes[val]);
 							map3.selectAll("path")
 								.style("fill", function (country) {
@@ -772,18 +773,18 @@
 								d3.select('p#value-step').text("Bordeaux-style Red");
 							}
 
-				    });
+						});
 
-				  var gStep = d3
-				    .select('div#slider')
-				    .append('svg')
+					var gStep = d3
+						.select('div#slider')
+						.append('svg')
 						.attr("class", "sliderStyle")
-				    .attr('width', 1200)
-				    .attr('height', 200)
-				    .append('g')
-				    .attr('transform', 'translate(100,30)');
+						.attr('width', 1200)
+						.attr('height', 200)
+						.append('g')
+						.attr('transform', 'translate(100,30)');
 
-				  gStep.call(sliderStep);
+					gStep.call(sliderStep);
 
 					if (sliderStep.value() == 0) {
 						d3.select('p#value-step').text("Bordeaux-style Red");
