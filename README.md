@@ -4,8 +4,8 @@ Project submission by Adam Liu (al838), April Ye (yy459), Cindy Zhang (lz247)
 ## Overview
 
 To run project on ```localhost:8000```:
-- Python 3: python -m http.server
-- Python 2: python -m SimpleHTTPServer 8000
+- Python 3: ```python -m http.server```
+- Python 2: ```python -m SimpleHTTPServer 8000```
 
 ![vis 1](vis1.png "Visualization 1")
 ![vis 2](vis2.png "Visualization 2")
